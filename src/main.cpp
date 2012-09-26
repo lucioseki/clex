@@ -66,7 +66,6 @@ int main(){
 	clex.showNMIIndex();
 	clex.setSimilarity(new Pearson);
 	clex.calculateConnectivity(5);
-	clex.showConnectivity();
 	clex.calculateConnectivity(3);
 	clex.showConnectivity();
 

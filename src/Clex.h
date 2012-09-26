@@ -19,9 +19,12 @@ class Clex{
 		map<DataSet*, vector<Partition*> > mapGeneratedPartitions; //< map containing a vector of calculated partitions for each DataSet
 
 		map<DataSet*, map<Partition*, map<Partition*, double > > > mapCRIndex; //< map that contains the CRIndex value for each calculated partition, for each real partition, for each DataSet
+
 		map<DataSet*, map<Partition*, map<Partition*, double > > > mapNMIIndex; //< map that contains the NMIIndex value for each calculated partition, for each real partition, for each DataSet
+
 		map<DataSet*, map<Partition*, map<Partition*, double > > > mapVIIndex; //< map that contains the VIIndex value for each calculated partition, for each real partition, for each DataSet
-		map<DataSet*, map<Partition*, pair<int, double > > > mapConnectivity; //< map that contains the Connectivity value for a given number of Neighbours, for each calculated partition for each DataSet
+
+		map<DataSet*, map<Partition*, map<int, double > > > mapConnectivity; //< map that contains the Connectivity value for a given number of Neighbours, for each calculated partition for each DataSet
 
 	public:
 		typedef vector<DataSet*>::iterator itDataSetOfClex;

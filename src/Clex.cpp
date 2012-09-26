@@ -93,7 +93,7 @@ void Clex::calculateConnectivity(int iANumNn){
 			// calculate Connectivity of generated partition
 			// and save on mapConnectivity
 			pObjRelationSDN = new RelationSDN(pSimilarity, *itDataSet, iANumNn);
-			mapConnectivity[*itDataSet][*itGeneratedPartition] = make_pair(iANumNn, obConnectivity.calculate(*itGeneratedPartition, pObjRelationSDN, *itDataSet));
+			mapConnectivity[*itDataSet][*itGeneratedPartition][iANumNn] = obConnectivity.calculate(*itGeneratedPartition, pObjRelationSDN, *itDataSet);
 		}	
 	}
 }
@@ -185,8 +185,11 @@ void Clex::showConnectivity(){
 		cout << "\t" << "NumNn" << "\t" << "Value" << endl;
 		// show label of each generated partition
 		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			// for each NumNn
+			for(map<int, double>::iterator it = mapConnectivity[*itDataSet][*itGeneratedPartition].begin(); it != mapConnectivity[*itDataSet][*itGeneratedPartition].end(); it++){
 			// show the Connectivity of generated partition
-			cout << (*itGeneratedPartition)->getPartitionName()	<< "\t" << mapConnectivity[*itDataSet][*itGeneratedPartition].first << "\t" << mapConnectivity[*itDataSet][*itGeneratedPartition].second << endl;
+				cout << (*itGeneratedPartition)->getPartitionName()	<< "\t" << it->first << "\t" << it->second << endl;
+			}
 		}
 	}
 }
