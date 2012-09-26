@@ -1,6 +1,9 @@
 #include <exception>
 #include "Clex.h"
 #include "DataSet.h"
+#include "Partition.h"
+#include "Euclidean.h"
+#include "Pearson.h"
 
 int main(){
 	Clex clex;
@@ -61,6 +64,11 @@ int main(){
 	clex.showVIIndex();
 	clex.calculateNMIIndex();
 	clex.showNMIIndex();
+	clex.setSimilarity(new Pearson);
+	clex.calculateConnectivity(5);
+	clex.showConnectivity();
+	clex.calculateConnectivity(3);
+	clex.showConnectivity();
 
 	return 0;
 }

@@ -21,6 +21,7 @@ class Clex{
 		map<DataSet*, map<Partition*, map<Partition*, double > > > mapCRIndex; //< map that contains the CRIndex value for each calculated partition, for each real partition, for each DataSet
 		map<DataSet*, map<Partition*, map<Partition*, double > > > mapNMIIndex; //< map that contains the NMIIndex value for each calculated partition, for each real partition, for each DataSet
 		map<DataSet*, map<Partition*, map<Partition*, double > > > mapVIIndex; //< map that contains the VIIndex value for each calculated partition, for each real partition, for each DataSet
+		map<DataSet*, map<Partition*, pair<int, double > > > mapConnectivity; //< map that contains the Connectivity value for a given number of Neighbours, for each calculated partition for each DataSet
 
 	public:
 		typedef vector<DataSet*>::iterator itDataSetOfClex;
@@ -49,6 +50,9 @@ class Clex{
 		// calculates the VIIndex for each generated Partition with each real Partition
 		void calculateVIIndex();
 
+		// calculates the Connectivity for each generated Partition with each real Partition
+		void calculateConnectivity(int);
+
 		// shows the calculated CRIndex
 		void showCRIndex();
 
@@ -57,5 +61,8 @@ class Clex{
 
 		// shows the calculated NMIIndex
 		void showNMIIndex();
+
+		// shows the calculated Connectivity
+		void showConnectivity();
 };
 #endif

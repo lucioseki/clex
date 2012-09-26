@@ -3,6 +3,7 @@
 #include "ValidationIndex/CRIndex.h"
 #include "ValidationIndex/NMIIndex.h"
 #include "ValidationIndex/VIIndex.h"
+#include "ValidationIndex/Connectivity.h"
 #include <iostream>
 using namespace std;
 
@@ -80,24 +81,41 @@ void Clex::calculateVIIndex(){
 	}
 }
 
+// calculates the Connectivity for each generated Partition with each real Partition
+void Clex::calculateConnectivity(int iANumNn){
+	RelationSDN *pObjRelationSDN;
+	Connectivity obConnectivity;
+
+	// for each DataSet in vDataSet
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
+		// for each generated partition
+		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			// calculate Connectivity of generated partition
+			// and save on mapConnectivity
+			pObjRelationSDN = new RelationSDN(pSimilarity, *itDataSet, iANumNn);
+			mapConnectivity[*itDataSet][*itGeneratedPartition] = make_pair(iANumNn, obConnectivity.calculate(*itGeneratedPartition, pObjRelationSDN, *itDataSet));
+		}	
+	}
+}
+
 // shows the calculated CRIndex
 void Clex::showCRIndex(){
 
 	// for each DataSet
-	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet < vDataSet.end(); itDataSet++){
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
 		cout << endl << "CRIndex of " << (*itDataSet)->getNameDataSet() << endl;
 
 		// show the label of each generated partition
-		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition < mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
 			cout << "\t" << (*itGeneratedPartition)->getPartitionName();
 		}
 
 		// for each real partition
-		for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition < mapRealPartitions[*itDataSet].end(); itRealPartition++){
+		for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition != mapRealPartitions[*itDataSet].end(); itRealPartition++){
 			// show the label of each real partition
 			cout << endl << (*itRealPartition)->getPartitionName();
 
-			for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition < mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
 				// show the CRIndex between generated partition and real partition
 				cout << "\t" << mapCRIndex[*itDataSet][*itGeneratedPartition][*itRealPartition];
 			}
@@ -110,20 +128,20 @@ void Clex::showCRIndex(){
 void Clex::showNMIIndex(){
 
 	// for each DataSet
-	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet < vDataSet.end(); itDataSet++){
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
 		cout << endl << "NMIIndex of " << (*itDataSet)->getNameDataSet() << endl;
 
 		// show label of each generated partition
-		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition < mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
 			cout << "\t" << (*itGeneratedPartition)->getPartitionName();
 		}
 
 		// for each real partition
-		for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition < mapRealPartitions[*itDataSet].end(); itRealPartition++){
+		for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition != mapRealPartitions[*itDataSet].end(); itRealPartition++){
 			// show the label of the real partition
 			cout << endl << (*itRealPartition)->getPartitionName();
 
-			for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition < mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
 				// show the NMIIndex of generated partition and real partition
 				cout << "\t" << mapNMIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition];
 			}
@@ -136,24 +154,39 @@ void Clex::showNMIIndex(){
 void Clex::showVIIndex(){
 
 	// for each DataSet
-	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet < vDataSet.end(); itDataSet++){
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
 		cout << endl << "VIIndex of " << (*itDataSet)->getNameDataSet() << endl;
 
 		// show label of each generated partition
-		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition < mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
 			cout << "\t" << (*itGeneratedPartition)->getPartitionName();
 		}
 		
 		// for each real partition
-		for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition < mapRealPartitions[*itDataSet].end(); itRealPartition++){
+		for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition != mapRealPartitions[*itDataSet].end(); itRealPartition++){
 			// show label of the real partition
 			cout << endl << (*itRealPartition)->getPartitionName();
 
-			for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition < mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
 				// show the VIIndex of generated partition and real partition
 				cout << "\t" << mapVIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition];
 			}
 		}	
 		cout << endl;
+	}
+}
+
+// shows the calculated Connectivity
+void Clex::showConnectivity(){
+
+	// for each DataSet
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
+		cout << endl << "Connectivity of " << (*itDataSet)->getNameDataSet() << endl;
+		cout << "\t" << "NumNn" << "\t" << "Value" << endl;
+		// show label of each generated partition
+		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			// show the Connectivity of generated partition
+			cout << (*itGeneratedPartition)->getPartitionName()	<< "\t" << mapConnectivity[*itDataSet][*itGeneratedPartition].first << "\t" << mapConnectivity[*itDataSet][*itGeneratedPartition].second << endl;
+		}
 	}
 }

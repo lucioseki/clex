@@ -1,12 +1,15 @@
 CC = g++
 FLAGS = -lboost_system -lboost_filesystem
-OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o Clex.o
+OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o RelationSDN.o SimilarityMatrix.o NnList.o Connectivity.o Clex.o
 
-main: main.cpp Clex.o
+main: main.cpp Clex.o Euclidean.o
 	$(CC) main.cpp -o teste $(OBJS) $(FLAGS)
 
-Clex.o: Clex.h Clex.cpp Partition.o DataSet.o Similarity.o CRIndex.o NMIIndex.o VIIndex.o
+Clex.o: Clex.h Clex.cpp Partition.o DataSet.o Similarity.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o
 	$(CC) -c Clex.cpp $(FLAGS)
+
+Connectivity.o: ValidationIndex/Connectivity.h ValidationIndex/Connectivity.cpp ValidationIndex.o RelationSDN.o NnList.o
+	$(CC) -c ValidationIndex/Connectivity.cpp
 
 CRIndex.o: ValidationIndex/CRIndex.h ValidationIndex/CRIndex.cpp ValidationIndex.o Exception.h Partition.o
 	$(CC) -c ValidationIndex/CRIndex.cpp
@@ -29,13 +32,13 @@ SettingsAlgorithm.o: SettingsAlgorithm.h SettingsAlgorithm.cpp
 ValidationIndex.o: ValidationIndex.h ValidationIndex.cpp Partition.o RelationSDN.o
 	$(CC) -c ValidationIndex.cpp -lm
 
-RelationSDN.o: RelationSDN.h RelationSDN.cpp DataSet.o SimilarityMatrix.h Similarity.o NnList.h
+RelationSDN.o: RelationSDN.h RelationSDN.cpp DataSet.o SimilarityMatrix.h SimilarityMatrix.cpp NnList.h
 	$(CC) -c RelationSDN.cpp
 
-SimilarityMatrix.o: SimilarityMatrix.h SimilarityMatrix.cpp RelationSDN.h DataSet.o Euclidean.o Object.o Pearson.o
+SimilarityMatrix.o: SimilarityMatrix.h SimilarityMatrix.cpp RelationSDN.h RelationSDN.cpp DataSet.o Euclidean.o Object.o Pearson.o
 	$(CC) -c SimilarityMatrix.cpp $(FLAGS)
 
-NnList.o: NnList.h NnList.cpp RelationSDN.h DataSet.o
+NnList.o: NnList.h NnList.cpp RelationSDN.o SimilarityMatrix.o DataSet.o
 	$(CC) -c NnList.cpp
 
 Euclidean.o: Euclidean.h Euclidean.cpp Similarity.o
