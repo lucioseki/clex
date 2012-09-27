@@ -67,7 +67,11 @@ int main(){
 	clex.setSimilarity(new Pearson);
 	clex.calculateConnectivity(5);
 	clex.calculateConnectivity(3);
+	clex.calculateDeviation(3);
+	clex.calculateSilhouette(3);
 	clex.showConnectivity();
+	clex.showDeviation();
+	clex.showSilhouette();
 
 	return 0;
 }

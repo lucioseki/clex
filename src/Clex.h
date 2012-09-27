@@ -26,6 +26,10 @@ class Clex{
 
 		map<DataSet*, map<Partition*, map<int, double > > > mapConnectivity; //< map that contains the Connectivity value for a given number of Neighbours, for each calculated partition for each DataSet
 
+		map<DataSet*, map<Partition*, map<int, double > > > mapDeviation; //< map that contains the Connectivity value for a given number of Neighbours, for each calculated partition for each DataSet
+
+		map<DataSet*, map<Partition*, map<int, double > > > mapSilhouette; //< map that contains the Silhouette value for a given number of Neighbours, for each calculated partition for each DataSet
+
 	public:
 		typedef vector<DataSet*>::iterator itDataSetOfClex;
 		typedef vector<Partition*>::iterator itPartitionOfClex;
@@ -53,8 +57,14 @@ class Clex{
 		// calculates the VIIndex for each generated Partition with each real Partition
 		void calculateVIIndex();
 
-		// calculates the Connectivity for each generated Partition with each real Partition
+		// calculates the Connectivity for each generated Partition
 		void calculateConnectivity(int);
+
+		// calculates the Deviation for each generated Partition
+		void calculateDeviation(int);
+
+		// calculates the Silhouette for each generated Partition
+		void calculateSilhouette(int);
 
 		// shows the calculated CRIndex
 		void showCRIndex();
@@ -67,5 +77,11 @@ class Clex{
 
 		// shows the calculated Connectivity
 		void showConnectivity();
+
+		// shows the calculated Deviation 
+		void showDeviation();
+
+		// shows the calculated Deviation 
+		void showSilhouette();
 };
 #endif

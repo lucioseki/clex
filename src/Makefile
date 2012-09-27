@@ -1,14 +1,20 @@
 CC = g++
 FLAGS = -lboost_system -lboost_filesystem
-OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o RelationSDN.o SimilarityMatrix.o NnList.o Connectivity.o Clex.o
+OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o RelationSDN.o SimilarityMatrix.o NnList.o Connectivity.o Deviation.o Silhouette.o Clex.o
 
 main: main.cpp Clex.o Euclidean.o
 	$(CC) main.cpp -o teste $(OBJS) $(FLAGS)
 
-Clex.o: Clex.h Clex.cpp Partition.o DataSet.o Similarity.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o
+Clex.o: Clex.h Clex.cpp Partition.o DataSet.o Similarity.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o Deviation.o Silhouette.o
 	$(CC) -c Clex.cpp $(FLAGS)
 
-Connectivity.o: ValidationIndex/Connectivity.h ValidationIndex/Connectivity.cpp ValidationIndex.o RelationSDN.o NnList.o
+Silhouette.o: ValidationIndex/Silhouette.h ValidationIndex/Silhouette.cpp DataSet.o Partition.o RelationSDN.o ValidationIndex.o
+	$(CC) -c ValidationIndex/Silhouette.cpp
+
+Deviation.o: ValidationIndex/Deviation.h ValidationIndex/Deviation.cpp DataSet.o Partition.o ValidationIndex.o RelationSDN.o
+	$(CC) -c ValidationIndex/Deviation.cpp
+
+Connectivity.o: ValidationIndex/Connectivity.h ValidationIndex/Connectivity.cpp ValidationIndex.o RelationSDN.o
 	$(CC) -c ValidationIndex/Connectivity.cpp
 
 CRIndex.o: ValidationIndex/CRIndex.h ValidationIndex/CRIndex.cpp ValidationIndex.o Exception.h Partition.o
