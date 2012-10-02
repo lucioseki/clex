@@ -17,6 +17,7 @@ Partition::Partition(DataSet *pAObjDataSet, string sAPathPartition, string sANam
 
 	pathPartition = sPathPartition + sNamePartition;
 	loadPartition();
+	calculateCentroid();
 	cout << "pathPartition>> " << pathPartition << endl;
 }
 
@@ -40,9 +41,7 @@ Partition::Partition(DataSet *pAObjDataSet, string sAPathPartition, string sANam
 		int iCluster = rand() % iNumClusters + 1; // numero entre 1 e iNumClusters
 		vectorObjCluster[iCluster].addObject(it);
 	}
-	for (itClustersOfPartition it = vectorObjCluster.begin(); it != vectorObjCluster.end(); it++){
-		it->calculateCentroid();
-	}
+	calculateCentroid();
 
 	iNumObjects = pObjDataSet->getNumberOfObjects();
 
@@ -190,6 +189,7 @@ DataSet* Partition::getDataSet() {
 }
 
 void Partition::addCluster(Cluster *pACluster) {
+	pACluster->calculateCentroid();
 	vectorObjCluster.insert(vectorObjCluster.end(), *pACluster);
 }
 //-----------

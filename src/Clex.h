@@ -10,6 +10,28 @@
 class Clex{
 
 	private:
+		// recebe um vetor de paths dos DataSets e Partitions do main
+		// e instanciar armazenando nos vDataSet e maps
+
+		// pra cada instancia de dataset e similaridade e NumNn
+		// instanciar um RelationSDN (ele calcula os nnlist e simMatrix)
+		// vRealtionSDN
+
+		// passar so path pra dataset, por dentro instancia e guarda no vector
+		// idem pra partitions
+
+		
+		/*
+		 * So uma funcao percorrendo os vetores e maps
+		 * vDataSet
+		 *   mapReal
+		 *     mapGenerated
+		 *       pra cada indice->calculate(itDataSet, itReal, itGen)
+		 *
+		 * */
+
+		// set pra indices que vai usar
+
 		Similarity *pSimilarity; //< pointer to the measure of Similarity
 
 		vector<DataSet*> vDataSet; //< vector containing pointers to the DataSets
@@ -37,16 +59,20 @@ class Clex{
 		// sets the similarity measure
 		void setSimilarity(Similarity* s);
 
-		// inserts a DataSet
-		void setDataSet(DataSet *pADataSet);
-		// passar so pointer pra dataset, por dentro guarda no vector
-		// idem pra partitions
+		// sets the DataSets
+		// @param a vector of paths for each DataSet
+		// instanciates a DataSet for each path and inserts in the vDataSet
+		void setDataSet(vector<pair<string, string> > vASDataSet);
 
 		// sets a Real Partition for a DataSet
-		void setRealPartition(DataSet* pADataSet, Partition *pAVPartition);
+		// @param the position of the DataSet in the vDataSet
+		// and a vector of paths for each Partition
+		void setRealPartition(int iADataSet, vector<pair<string, string> > vASPartition);
 
 		// sets a Generated Partition for a DataSet
-		void setGeneratedPartition(DataSet* pADataSet, Partition *pAVPartition);
+		// @param the position of the DataSet in the vDataSet
+		// and a vector of paths for each Partition
+		void setGeneratedPartition(int iADataSet, vector<pair<string, string> > vASPartition);
 
 		// calculates the CRIndex for each generated Partition with each real Partition
 		void calculateCRIndex();
@@ -58,12 +84,15 @@ class Clex{
 		void calculateVIIndex();
 
 		// calculates the Connectivity for each generated Partition
+		// @param number of Nearest neighbours
 		void calculateConnectivity(int);
 
 		// calculates the Deviation for each generated Partition
+		// @param number of Nearest neighbours
 		void calculateDeviation(int);
 
 		// calculates the Silhouette for each generated Partition
+		// @param number of Nearest neighbours
 		void calculateSilhouette(int);
 
 		// shows the calculated CRIndex

@@ -15,18 +15,24 @@ void Clex::setSimilarity(Similarity* s){
 }
 
 // sets the DataSet vector
-void Clex::setDataSet(DataSet *pAVDataSet){
-	vDataSet.push_back(pAVDataSet);
+void Clex::setDataSet(vector<pair<string, string> > vASDataSet){
+	for(int i = 0; i < vASDataSet.size(); i++){
+		vDataSet.push_back(new DataSet(vASDataSet[i].first, vASDataSet[i].second));
+	}
 }
 
 // sets the vector of real partitions for a DataSet
-void Clex::setRealPartition(DataSet* pADataSet, Partition *pAVPartition){
-	mapRealPartitions[pADataSet].push_back(pAVPartition);
+void Clex::setRealPartition(int iADataSet, vector<pair<string, string> > vASPartition){
+	for(int i = 0; i < vASPartition.size(); i++){ 
+		mapRealPartitions[vDataSet[iADataSet]].push_back(new Partition(vDataSet[iADataSet], vASPartition[i].first, vASPartition[i].second));
+	}
 }
 
 // sets the vector of generated partitions for a DataSet
-void Clex::setGeneratedPartition(DataSet* pADataSet, Partition *pAVPartition){
-	mapGeneratedPartitions[pADataSet].push_back(pAVPartition);
+void Clex::setGeneratedPartition(int iADataSet, vector<pair<string, string> > vASPartition){
+	for(int i = 0; i < vASPartition.size(); i++){
+		mapGeneratedPartitions[vDataSet[iADataSet]].push_back(new Partition(vDataSet[iADataSet], vASPartition[i].first, vASPartition[i].second));
+	}
 }
 
 // calculates the CRIndex for each generated Partition with each real Partition
@@ -61,7 +67,7 @@ void Clex::calculateNMIIndex(){
 				// and save on mapNMIIndex
 				mapNMIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
 			}
-		}	
+		}
 	}
 }
 
@@ -84,6 +90,7 @@ void Clex::calculateVIIndex(){
 }
 
 // calculates the Connectivity for each generated Partition
+// @param number of Nearest neighbours
 void Clex::calculateConnectivity(int iANumNn){
 	RelationSDN *pObjRelationSDN;
 	Connectivity obConnectivity;
@@ -101,6 +108,7 @@ void Clex::calculateConnectivity(int iANumNn){
 }
 
 // calculates the Deviation for each generated Partition
+// @param number of Nearest neighbours
 void Clex::calculateDeviation(int iANumNn){
 	RelationSDN *pObjRelationSDN;
 	Deviation obDeviation;
@@ -118,6 +126,7 @@ void Clex::calculateDeviation(int iANumNn){
 }
 
 // calculates the Silhouette index for each generated Partition
+// @param number of Nearest neighbours
 void Clex::calculateSilhouette (int iANumNn){
 	RelationSDN *pObjRelationSDN;
 	Silhouette obSilhouette;
