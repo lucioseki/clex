@@ -21,6 +21,13 @@ void Clex::setDataSet(vector<pair<string, string> > vASDataSet){
 	}
 }
 
+// creates RelationSDN for each combination of Similarity, DataSet and NumNn
+void Clex::createRelationSDN(int iANumNn){
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
+		mapRelationSDN[pSimilarity][*itDataSet][iANumNn] = new RelationSDN(pSimilarity, *itDataSet, iANumNn);
+	}
+}
+
 // sets the vector of real partitions for a DataSet
 void Clex::setRealPartition(int iADataSet, vector<pair<string, string> > vASPartition){
 	for(int i = 0; i < vASPartition.size(); i++){ 
@@ -32,6 +39,42 @@ void Clex::setRealPartition(int iADataSet, vector<pair<string, string> > vASPart
 void Clex::setGeneratedPartition(int iADataSet, vector<pair<string, string> > vASPartition){
 	for(int i = 0; i < vASPartition.size(); i++){
 		mapGeneratedPartitions[vDataSet[iADataSet]].push_back(new Partition(vDataSet[iADataSet], vASPartition[i].first, vASPartition[i].second));
+	}
+}
+
+// calculate the validation indexes
+void Clex::calculateValidationIndex(){
+	CRIndex obCRIndex;
+	NMIIndex obNMIIndex;
+	VIIndex obVIIndex;
+	Connectivity obConnectivity;
+	Deviation obDeviation;
+	Silhouette obSilhouette;
+
+	// for each dataset
+	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
+		// for each generated partition
+		for(itPartitionOfClex itGeneratedPartition = mapGeneratedPartitions[*itDataSet].begin(); itGeneratedPartition != mapGeneratedPartitions[*itDataSet].end(); itGeneratedPartition++){
+			// for each real partition
+			for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition != mapRealPartitions[*itDataSet].end(); itRealPartition++){
+				// calculate the indexes of generated partition and real partition
+				// and save on the maps
+				mapCRIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obCRIndex.calculate(**itGeneratedPartition, **itRealPartition);
+				mapNMIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
+				mapVIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
+			}
+		}
+	}
+	for(map<Similarity*, map<DataSet*, map<int, RelationSDN*> > >::iterator itMapSimilarity = mapRelationSDN.begin(); itMapSimilarity != mapRelationSDN.end(); itMapSimilarity++){
+		for(map<DataSet*, map<int, RelationSDN*> >::iterator itMapDataSet = mapRelationSDN[itMapSimilarity->first].begin(); itMapDataSet != mapRelationSDN[itMapSimilarity->first].end(); itMapDataSet++){
+			for(map<int, RelationSDN*>::iterator itMapNumNn = mapRelationSDN[itMapSimilarity->first][itMapDataSet->first].begin(); itMapNumNn != mapRelationSDN[itMapSimilarity->first][itMapDataSet->first].end(); itMapNumNn++){
+				for(itPartitionOfClex itPartition = mapGeneratedPartitions[itMapDataSet->first].begin(); itPartition != mapGeneratedPartitions[itMapDataSet->first].end(); itPartition++){
+					mapConnectivity[itMapDataSet->first][*itPartition][itMapNumNn->first] = obConnectivity.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+					mapDeviation[itMapDataSet->first][*itPartition][itMapNumNn->first] = obDeviation.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+					mapSilhouette[itMapDataSet->first][*itPartition][itMapNumNn->first] = obSilhouette.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+				}
+			}
+		}
 	}
 }
 
@@ -141,6 +184,16 @@ void Clex::calculateSilhouette (int iANumNn){
 			mapSilhouette[*itDataSet][*itGeneratedPartition][iANumNn] = obSilhouette.calculate(*itGeneratedPartition, pObjRelationSDN, *itDataSet);
 		}
 	}
+}
+
+// shows the calculated indexes
+void Clex::showValidationIndex(){
+	showCRIndex();
+	showNMIIndex();
+	showVIIndex();
+	showConnectivity();
+	showDeviation();
+	showSilhouette();
 }
 
 // shows the calculated CRIndex

@@ -12,6 +12,9 @@ int main(){
 	vector<pair<string, string> > vSRealPartition;
 	vector<pair<string, string> > vSGeneratedPartition;
 
+	// setar Similarity
+	clex.setSimilarity(new Pearson);
+	
 	// receber vDataSet de winDataSet;
 	// vDataSet = winDataSet.get_DataSet();
 	vSDataSet.push_back(make_pair("DataSet/", "simpsons.txt"));
@@ -19,6 +22,10 @@ int main(){
 	
 	// setar vDataSet do clex
 	clex.setDataSet(vSDataSet);
+
+	// preencher mapRelationSDN passando NumNn como parametro
+	clex.createRelationSDN(3);
+	clex.createRelationSDN(2);
 
 	// receber vRealPartition de winRealPartition
 	// vRealPartition = winRealPartition.getPartition();
@@ -40,16 +47,19 @@ int main(){
 
 	// para cada DataSet, setar um vector de Partitions calculados
 
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsonsR.clu"));
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsonsR2.clu"));
+	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons.clu"));
+	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons1.clu"));
 	clex.setGeneratedPartition(0, vSGeneratedPartition);
 	vSGeneratedPartition.clear();
 
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsonsR.clu"));
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsonsR2.clu"));
+	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons.clu"));
+	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons1.clu"));
 	clex.setGeneratedPartition(1, vSGeneratedPartition);
 	vSGeneratedPartition.clear();
 
+	clex.calculateValidationIndex();
+	clex.showValidationIndex();
+/*
 	clex.calculateCRIndex();
 	clex.showCRIndex();
 	
@@ -57,16 +67,14 @@ int main(){
 	clex.showVIIndex();
 	clex.calculateNMIIndex();
 	clex.showNMIIndex();
-/*
-	clex.calculateConnectivity(2);
+
 	clex.calculateConnectivity(3);
 	clex.showConnectivity();
-*/
-	clex.setSimilarity(new Pearson);
-	clex.calculateDeviation(1);
-	clex.showDeviation();
-	clex.calculateSilhouette(3);
-	clex.showSilhouette();
 
+	clex.calculateDeviation(4);
+	clex.showDeviation();
+	clex.calculateSilhouette(4);
+	clex.showSilhouette();
+*/
 	return 0;
 }

@@ -4,32 +4,13 @@
 #include "Partition.h"
 #include "DataSet.h"
 #include "Similarity.h"
+#include "RelationSDN.h"
 
 #include <map>
 
 class Clex{
 
 	private:
-		// recebe um vetor de paths dos DataSets e Partitions do main
-		// e instanciar armazenando nos vDataSet e maps
-
-		// pra cada instancia de dataset e similaridade e NumNn
-		// instanciar um RelationSDN (ele calcula os nnlist e simMatrix)
-		// vRealtionSDN
-
-		// passar so path pra dataset, por dentro instancia e guarda no vector
-		// idem pra partitions
-
-		
-		/*
-		 * So uma funcao percorrendo os vetores e maps
-		 * vDataSet
-		 *   mapReal
-		 *     mapGenerated
-		 *       pra cada indice->calculate(itDataSet, itReal, itGen)
-		 *
-		 * */
-
 		// set pra indices que vai usar
 
 		Similarity *pSimilarity; //< pointer to the measure of Similarity
@@ -52,6 +33,7 @@ class Clex{
 
 		map<DataSet*, map<Partition*, map<int, double > > > mapSilhouette; //< map that contains the Silhouette value for a given number of Neighbours, for each calculated partition for each DataSet
 
+		map<Similarity*, map<DataSet*, map<int, RelationSDN* > > > mapRelationSDN; //< map that contains the RelationSDN for each combination of Similarity, DataSet and NumNn
 	public:
 		typedef vector<DataSet*>::iterator itDataSetOfClex;
 		typedef vector<Partition*>::iterator itPartitionOfClex;
@@ -64,6 +46,9 @@ class Clex{
 		// instanciates a DataSet for each path and inserts in the vDataSet
 		void setDataSet(vector<pair<string, string> > vASDataSet);
 
+		// creates RelationSDN for each combination of Similarity, DataSet and NumNn
+		void createRelationSDN(int iANumNn);
+
 		// sets a Real Partition for a DataSet
 		// @param the position of the DataSet in the vDataSet
 		// and a vector of paths for each Partition
@@ -73,6 +58,9 @@ class Clex{
 		// @param the position of the DataSet in the vDataSet
 		// and a vector of paths for each Partition
 		void setGeneratedPartition(int iADataSet, vector<pair<string, string> > vASPartition);
+
+		// calculates the validation Indexes
+		void calculateValidationIndex();
 
 		// calculates the CRIndex for each generated Partition with each real Partition
 		void calculateCRIndex();
@@ -94,6 +82,9 @@ class Clex{
 		// calculates the Silhouette for each generated Partition
 		// @param number of Nearest neighbours
 		void calculateSilhouette(int);
+
+		// shows the calculated Indexes
+		void showValidationIndex();
 
 		// shows the calculated CRIndex
 		void showCRIndex();

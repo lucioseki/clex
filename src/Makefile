@@ -5,7 +5,7 @@ OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson
 main: main.cpp Clex.o Euclidean.o Pearson.o
 	$(CC) main.cpp -o teste $(OBJS) $(FLAGS)
 
-Clex.o: Clex.h Clex.cpp Partition.o DataSet.o Similarity.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o Deviation.o Silhouette.o SimilarityMatrix.o
+Clex.o: Clex.h Clex.cpp Partition.o DataSet.o Similarity.o RelationSDN.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o Deviation.o Silhouette.o SimilarityMatrix.o
 	$(CC) -c Clex.cpp $(FLAGS)
 
 Silhouette.o: ValidationIndex/Silhouette.h ValidationIndex/Silhouette.cpp DataSet.o Partition.o RelationSDN.o ValidationIndex.o
