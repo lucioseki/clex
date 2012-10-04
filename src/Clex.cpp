@@ -21,6 +21,14 @@ void Clex::setDataSet(vector<pair<string, string> > vASDataSet){
 	}
 }
 
+// sets the Validation Indexes to be used
+// @param a vector of names of the indexes
+void Clex::setValidationIndex(vector<string> vASValidationIndex){
+	for(int i = 0; i < vASValidationIndex.size(); i++){
+		sValidationIndex.insert(vASValidationIndex[i]);
+	}
+}
+
 // creates RelationSDN for each combination of Similarity, DataSet and NumNn
 void Clex::createRelationSDN(int iANumNn){
 	for(itDataSetOfClex itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
@@ -59,9 +67,15 @@ void Clex::calculateValidationIndex(){
 			for(itPartitionOfClex itRealPartition = mapRealPartitions[*itDataSet].begin(); itRealPartition != mapRealPartitions[*itDataSet].end(); itRealPartition++){
 				// calculate the indexes of generated partition and real partition
 				// and save on the maps
-				mapCRIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obCRIndex.calculate(**itGeneratedPartition, **itRealPartition);
-				mapNMIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
-				mapVIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
+				if(sValidationIndex.find("CRIndex") != sValidationIndex.end()){
+					mapCRIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obCRIndex.calculate(**itGeneratedPartition, **itRealPartition);
+				}
+				if(sValidationIndex.find("NMIIndex") != sValidationIndex.end()){
+					mapNMIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
+				}
+				if(sValidationIndex.find("NMIIndex") != sValidationIndex.end()){
+					mapVIIndex[*itDataSet][*itGeneratedPartition][*itRealPartition] = obNMIIndex.calculate(**itGeneratedPartition, **itRealPartition);
+				}
 			}
 		}
 	}
@@ -69,9 +83,15 @@ void Clex::calculateValidationIndex(){
 		for(map<DataSet*, map<int, RelationSDN*> >::iterator itMapDataSet = mapRelationSDN[itMapSimilarity->first].begin(); itMapDataSet != mapRelationSDN[itMapSimilarity->first].end(); itMapDataSet++){
 			for(map<int, RelationSDN*>::iterator itMapNumNn = mapRelationSDN[itMapSimilarity->first][itMapDataSet->first].begin(); itMapNumNn != mapRelationSDN[itMapSimilarity->first][itMapDataSet->first].end(); itMapNumNn++){
 				for(itPartitionOfClex itPartition = mapGeneratedPartitions[itMapDataSet->first].begin(); itPartition != mapGeneratedPartitions[itMapDataSet->first].end(); itPartition++){
-					mapConnectivity[itMapDataSet->first][*itPartition][itMapNumNn->first] = obConnectivity.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
-					mapDeviation[itMapDataSet->first][*itPartition][itMapNumNn->first] = obDeviation.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
-					mapSilhouette[itMapDataSet->first][*itPartition][itMapNumNn->first] = obSilhouette.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+					if(sValidationIndex.find("Connectivity") != sValidationIndex.end()){
+						mapConnectivity[itMapDataSet->first][*itPartition][itMapNumNn->first] = obConnectivity.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+					}
+					if(sValidationIndex.find("Deviation") != sValidationIndex.end()){
+						mapDeviation[itMapDataSet->first][*itPartition][itMapNumNn->first] = obDeviation.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+					}
+					if(sValidationIndex.find("Silhouette") != sValidationIndex.end()){
+						mapSilhouette[itMapDataSet->first][*itPartition][itMapNumNn->first] = obSilhouette.calculate(*itPartition, mapRelationSDN[itMapSimilarity->first][itMapDataSet->first][itMapNumNn->first], itMapDataSet->first);
+					}
 				}
 			}
 		}
@@ -188,12 +208,18 @@ void Clex::calculateSilhouette (int iANumNn){
 
 // shows the calculated indexes
 void Clex::showValidationIndex(){
-	showCRIndex();
-	showNMIIndex();
-	showVIIndex();
-	showConnectivity();
-	showDeviation();
-	showSilhouette();
+	if(sValidationIndex.find("CRIndex") != sValidationIndex.end())
+		showCRIndex();
+	if(sValidationIndex.find("NMIIndex") != sValidationIndex.end())
+		showNMIIndex();
+	if(sValidationIndex.find("VIIndex") != sValidationIndex.end())
+		showVIIndex();
+	if(sValidationIndex.find("Connectivity") != sValidationIndex.end())
+		showConnectivity();
+	if(sValidationIndex.find("Deviation") != sValidationIndex.end())
+		showDeviation();
+	if(sValidationIndex.find("Silhouette") != sValidationIndex.end())
+		showSilhouette();
 }
 
 // shows the calculated CRIndex

@@ -11,6 +11,7 @@ int main(){
 	vector<pair<string, string> > vSDataSet;
 	vector<pair<string, string> > vSRealPartition;
 	vector<pair<string, string> > vSGeneratedPartition;
+	vector<string> vSValidationIndex;
 
 	// setar Similarity
 	clex.setSimilarity(new Pearson);
@@ -57,6 +58,15 @@ int main(){
 	clex.setGeneratedPartition(1, vSGeneratedPartition);
 	vSGeneratedPartition.clear();
 
+	// setar os indices de validacao
+	vSValidationIndex.push_back("CRIndex");
+	vSValidationIndex.push_back("NMIIndex");
+	vSValidationIndex.push_back("VIIndex");
+	vSValidationIndex.push_back("Connectivity");
+	vSValidationIndex.push_back("Deviation");
+	vSValidationIndex.push_back("Silhouette");
+
+	clex.setValidationIndex(vSValidationIndex);
 	clex.calculateValidationIndex();
 	clex.showValidationIndex();
 /*

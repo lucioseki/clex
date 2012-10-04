@@ -5,17 +5,19 @@
 #include "DataSet.h"
 #include "Similarity.h"
 #include "RelationSDN.h"
+#include "ValidationIndex.h"
 
 #include <map>
+#include<set>
 
 class Clex{
 
 	private:
-		// set pra indices que vai usar
-
 		Similarity *pSimilarity; //< pointer to the measure of Similarity
 
 		vector<DataSet*> vDataSet; //< vector containing pointers to the DataSets
+
+		set<string> sValidationIndex; //< set containing a vector of validation indexes to be used
 
 		map<DataSet*, vector<Partition*> > mapRealPartitions; //< map containing a vector of real partitions for each DataSet
 
@@ -45,6 +47,10 @@ class Clex{
 		// @param a vector of paths for each DataSet
 		// instanciates a DataSet for each path and inserts in the vDataSet
 		void setDataSet(vector<pair<string, string> > vASDataSet);
+
+		// sets the Validation Indexes to be used
+		// @param a vector of names of the indexes
+		void setValidationIndex(vector<string> vASValidationIndex);
 
 		// creates RelationSDN for each combination of Similarity, DataSet and NumNn
 		void createRelationSDN(int iANumNn);

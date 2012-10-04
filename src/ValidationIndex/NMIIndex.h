@@ -16,7 +16,7 @@
 /* Vinicius, colocar um breve comentário sobre o que a NMIIndex faz */
 /* Colacar um comentário mais detalhado sobre o que faz a NMIIndex e porque herda de InformatinTheory e ValidationIndex */
 /* External validation index that uses InformationTheory */
-class NMIIndex : public InformationTheory, ValidationIndex {
+class NMIIndex : public InformationTheory, public ValidationIndex {
     public:
             virtual double calculate(Partition &objAPartition1, Partition &objAPartition2);
             virtual double calculate(Partition *pAPartition, RelationSDN *pARelation, DataSet *pADataset);

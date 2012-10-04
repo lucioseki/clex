@@ -16,7 +16,7 @@
 #include "../ValidationIndex.h"
 
 
-class CRIndex : ValidationIndex {
+class CRIndex : public ValidationIndex {
   public:
         virtual double calculate(Partition &objAPartition1, Partition &objAPartition2);
         
