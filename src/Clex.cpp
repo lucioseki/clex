@@ -10,8 +10,14 @@
 using namespace std;
 
 // sets the similarity measure
-void Clex::setSimilarity(Similarity* s){
-	pSimilarity = s;
+void Clex::setSimilarity(string sASimilarity){
+	if(sASimilarity.compare("Euclidean") == 0){
+		pSimilarity = &objEuclidean;
+	}else if(sASimilarity.compare("Pearson") == 0){
+		pSimilarity = &objPearson;
+	}else{
+		cout << "Unknown similarity measure" << endl;
+	}
 }
 
 // sets the DataSet vector

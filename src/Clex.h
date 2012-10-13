@@ -4,6 +4,8 @@
 #include "Partition.h"
 #include "DataSet.h"
 #include "Similarity.h"
+#include "Euclidean.h"
+#include "Pearson.h"
 #include "RelationSDN.h"
 #include "ValidationIndex.h"
 
@@ -14,6 +16,8 @@ class Clex{
 
 	private:
 		Similarity *pSimilarity; //< pointer to the measure of Similarity
+		Euclidean objEuclidean;
+		Pearson objPearson;
 
 		vector<DataSet*> vDataSet; //< vector containing pointers to the DataSets
 
@@ -41,7 +45,7 @@ class Clex{
 		typedef vector<Partition*>::iterator itPartitionOfClex;
 
 		// sets the similarity measure
-		void setSimilarity(Similarity* s);
+		void setSimilarity(string);
 
 		// sets the DataSets
 		// @param a vector of paths for each DataSet

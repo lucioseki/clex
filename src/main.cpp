@@ -9,12 +9,11 @@ int main(){
 	Clex clex;
 
 	vector<pair<string, string> > vSDataSet;
-	vector<pair<string, string> > vSRealPartition;
-	vector<pair<string, string> > vSGeneratedPartition;
+	vector<pair<string, string> > vSPartition;
 	vector<string> vSValidationIndex;
 
 	// setar Similarity
-	clex.setSimilarity(new Pearson);
+	clex.setSimilarity("Pearson");
 	
 	// receber vDataSet de winDataSet;
 	// vDataSet = winDataSet.get_DataSet();
@@ -33,30 +32,30 @@ int main(){
 
 	// para cada DataSet, setar um vector de Partitions reais
 	
-	vSRealPartition.push_back(make_pair("Partition/", "simpsonsR.clu"));
-	vSRealPartition.push_back(make_pair("Partition/", "simpsonsR2.clu"));
-	clex.setRealPartition(0, vSRealPartition);
-	vSRealPartition.clear();
+	vSPartition.push_back(make_pair("Partition/", "simpsonsR.clu"));
+	vSPartition.push_back(make_pair("Partition/", "simpsonsR2.clu"));
+	clex.setRealPartition(0, vSPartition);
+	vSPartition.clear();
 
-	vSRealPartition.push_back(make_pair("Partition/", "simpsonsR.clu"));
-	vSRealPartition.push_back(make_pair("Partition/", "simpsonsR2.clu"));
-	clex.setRealPartition(1, vSRealPartition);
-	vSRealPartition.clear();
+	vSPartition.push_back(make_pair("Partition/", "simpsonsR.clu"));
+	vSPartition.push_back(make_pair("Partition/", "simpsonsR2.clu"));
+	clex.setRealPartition(1, vSPartition);
+	vSPartition.clear();
 
 	// receber vGeneratedPartition de winGeneratedPartition
 	// vGeneratedPartition = winGeneratedPartition.getPartition();
 
 	// para cada DataSet, setar um vector de Partitions calculados
 
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons.clu"));
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons1.clu"));
-	clex.setGeneratedPartition(0, vSGeneratedPartition);
-	vSGeneratedPartition.clear();
+	vSPartition.push_back(make_pair("Partition/", "simpsons.clu"));
+	vSPartition.push_back(make_pair("Partition/", "simpsons1.clu"));
+	clex.setGeneratedPartition(0, vSPartition);
+	vSPartition.clear();
 
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons.clu"));
-	vSGeneratedPartition.push_back(make_pair("Partition/", "simpsons1.clu"));
-	clex.setGeneratedPartition(1, vSGeneratedPartition);
-	vSGeneratedPartition.clear();
+	vSPartition.push_back(make_pair("Partition/", "simpsons.clu"));
+	vSPartition.push_back(make_pair("Partition/", "simpsons1.clu"));
+	clex.setGeneratedPartition(1, vSPartition);
+	vSPartition.clear();
 
 	// setar os indices de validacao
 	vSValidationIndex.push_back("CRIndex");
