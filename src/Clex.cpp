@@ -10,7 +10,7 @@
 using namespace std;
 
 // sets the similarity measure
-void Clex::setSimilarity(string sASimilarity){
+void Clex::setSimilarity(const string &sASimilarity){
 	if(sASimilarity.compare("Euclidean") == 0){
 		pSimilarity = &objEuclidean;
 	}else if(sASimilarity.compare("Pearson") == 0){
@@ -21,7 +21,7 @@ void Clex::setSimilarity(string sASimilarity){
 }
 
 // sets the DataSet vector
-void Clex::setDataSet(vector<pair<string, string> > vASDataSet){
+void Clex::setDataSet(vector<pair<string, string> > &vASDataSet){
 	for(int i = 0; i < vASDataSet.size(); i++){
 		vDataSet.push_back(new DataSet(vASDataSet[i].first, vASDataSet[i].second));
 	}
@@ -29,7 +29,7 @@ void Clex::setDataSet(vector<pair<string, string> > vASDataSet){
 
 // sets the Validation Indexes to be used
 // @param a vector of names of the indexes
-void Clex::setValidationIndex(vector<string> vASValidationIndex){
+void Clex::setValidationIndex(vector<string> &vASValidationIndex){
 	for(int i = 0; i < vASValidationIndex.size(); i++){
 		sValidationIndex.insert(vASValidationIndex[i]);
 	}
@@ -43,14 +43,14 @@ void Clex::createRelationSDN(int iANumNn){
 }
 
 // sets the vector of real partitions for a DataSet
-void Clex::setRealPartition(int iADataSet, vector<pair<string, string> > vASPartition){
+void Clex::setRealPartition(int iADataSet, vector<pair<string, string> > &vASPartition){
 	for(int i = 0; i < vASPartition.size(); i++){ 
 		mapRealPartitions[vDataSet[iADataSet]].push_back(new Partition(vDataSet[iADataSet], vASPartition[i].first, vASPartition[i].second));
 	}
 }
 
 // sets the vector of generated partitions for a DataSet
-void Clex::setGeneratedPartition(int iADataSet, vector<pair<string, string> > vASPartition){
+void Clex::setGeneratedPartition(int iADataSet, vector<pair<string, string> > &vASPartition){
 	for(int i = 0; i < vASPartition.size(); i++){
 		mapGeneratedPartitions[vDataSet[iADataSet]].push_back(new Partition(vDataSet[iADataSet], vASPartition[i].first, vASPartition[i].second));
 	}

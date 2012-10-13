@@ -45,16 +45,16 @@ class Clex{
 		typedef vector<Partition*>::iterator itPartitionOfClex;
 
 		// sets the similarity measure
-		void setSimilarity(string);
+		void setSimilarity(const string &sASimilarity);
 
 		// sets the DataSets
 		// @param a vector of paths for each DataSet
 		// instanciates a DataSet for each path and inserts in the vDataSet
-		void setDataSet(vector<pair<string, string> > vASDataSet);
+		void setDataSet(vector<pair<string, string> > &vASDataSet);
 
 		// sets the Validation Indexes to be used
 		// @param a vector of names of the indexes
-		void setValidationIndex(vector<string> vASValidationIndex);
+		void setValidationIndex(vector<string> &vASValidationIndex);
 
 		// creates RelationSDN for each combination of Similarity, DataSet and NumNn
 		void createRelationSDN(int iANumNn);
@@ -62,12 +62,12 @@ class Clex{
 		// sets a Real Partition for a DataSet
 		// @param the position of the DataSet in the vDataSet
 		// and a vector of paths for each Partition
-		void setRealPartition(int iADataSet, vector<pair<string, string> > vASPartition);
+		void setRealPartition(int iADataSet, vector<pair<string, string> > &vASPartition);
 
 		// sets a Generated Partition for a DataSet
 		// @param the position of the DataSet in the vDataSet
 		// and a vector of paths for each Partition
-		void setGeneratedPartition(int iADataSet, vector<pair<string, string> > vASPartition);
+		void setGeneratedPartition(int iADataSet, vector<pair<string, string> > &vASPartition);
 
 		// calculates the validation Indexes
 		void calculateValidationIndex();
