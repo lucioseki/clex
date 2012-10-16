@@ -61,11 +61,15 @@ int main(){
 	vSValidationIndex.push_back("CRIndex");
 	vSValidationIndex.push_back("NMIIndex");
 	vSValidationIndex.push_back("VIIndex");
+	clex.setExternalIndex(vSValidationIndex);
+	vSValidationIndex.clear();
+
 	vSValidationIndex.push_back("Connectivity");
 	vSValidationIndex.push_back("Deviation");
 	vSValidationIndex.push_back("Silhouette");
+	clex.setInternalIndex(vSValidationIndex);
+	vSValidationIndex.clear();
 
-	clex.setValidationIndex(vSValidationIndex);
 	clex.calculateValidationIndex();
 	clex.showValidationIndex();
 /*

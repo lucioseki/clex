@@ -38,13 +38,13 @@ SettingsAlgorithm.o: SettingsAlgorithm.h SettingsAlgorithm.cpp
 ValidationIndex.o: ValidationIndex.h ValidationIndex.cpp Partition.o RelationSDN.o
 	$(CC) -c ValidationIndex.cpp -lm
 
-RelationSDN.o: RelationSDN.h RelationSDN.cpp DataSet.o SimilarityMatrix.h SimilarityMatrix.cpp NnList.h
+RelationSDN.o: RelationSDN.h RelationSDN.cpp DataSet.o SimilarityMatrix.h SimilarityMatrix.cpp NnList.o
 	$(CC) -c RelationSDN.cpp
 
 SimilarityMatrix.o: SimilarityMatrix.h SimilarityMatrix.cpp RelationSDN.h RelationSDN.cpp DataSet.o Euclidean.o Object.o Pearson.o
 	$(CC) -c SimilarityMatrix.cpp $(FLAGS)
 
-NnList.o: NnList.h NnList.cpp RelationSDN.o SimilarityMatrix.o DataSet.o
+NnList.o: NnList.h NnList.cpp RelationSDN.h RelationSDN.cpp SimilarityMatrix.o DataSet.o
 	$(CC) -c NnList.cpp
 
 Euclidean.o: Euclidean.h Euclidean.cpp Similarity.o
