@@ -1,9 +1,10 @@
 CC = g++
+OUTPUT=main
 FLAGS = -lboost_system -lboost_filesystem
 OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o RelationSDN.o SimilarityMatrix.o NnList.o Connectivity.o Deviation.o Silhouette.o Clex.o
 
-main: main.cpp Clex.o Euclidean.o Pearson.o
-	$(CC) main.cpp -o teste $(OBJS) $(FLAGS)
+$(OUTPUT): main.cpp Clex.o Euclidean.o Pearson.o
+	$(CC) main.cpp -o $(OUTPUT) $(OBJS) $(FLAGS)
 
 Clex.o: Clex.h Clex.cpp Partition.o DataSet.o ValidationIndex.o Similarity.o Euclidean.o Pearson.o RelationSDN.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o Deviation.o Silhouette.o SimilarityMatrix.o
 	$(CC) -c Clex.cpp $(FLAGS)
