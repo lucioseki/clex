@@ -71,7 +71,8 @@ int main(){
 	vSValidationIndex.clear();
 
 	clex.calculateValidationIndex();
-	clex.showValidationIndex();
+	clex.showExternalIndex();
+	clex.showInternalIndex();
 /*
 	clex.calculateCRIndex();
 	clex.showCRIndex();

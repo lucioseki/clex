@@ -80,8 +80,11 @@ class Clex{
 		// calculates the internal validation Indexes
 		void calculateInternalIndex();
 
-		// shows the calculated Indexes
-		void showValidationIndex();
+		// shows the internal calculated Indexes
+		void showInternalIndex();
+
+		// shows the external calculated Indexes
+		void showExternalIndex();
 
 };
 #endif

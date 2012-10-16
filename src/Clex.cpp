@@ -9,6 +9,7 @@
 #include <iostream>
 using namespace std;
 
+// initializes the maps
 Clex::Clex(){
 	mapSimilarity["Euclidean"] = new Euclidean();
 	mapSimilarity["Pearson"] = new Pearson();
@@ -69,12 +70,24 @@ void Clex::setGeneratedPartition(int iADataSet, vector<pair<string, string> > &v
 	}
 }
 
+// calculate the validation indexes
 void Clex::calculateValidationIndex(){
-	calculateExternalIndex();
 	calculateInternalIndex();
+	calculateExternalIndex();
 }
 
-// calculate the validation indexes
+// calculate the internal validation indexes
+void Clex::calculateInternalIndex(){
+	for(vector<RelationSDN*>::iterator itRelationSDN = vRelationSDN.begin(); itRelationSDN != vRelationSDN.end(); itRelationSDN++){
+		for(set<ValidationIndex*>::iterator itValidationIndex = sInternalIndex.begin(); itValidationIndex != sInternalIndex.end(); itValidationIndex++){
+			for(vector<Partition*>::iterator itPartition = mapGeneratedPartitions[(*itRelationSDN)->getDataSet()].begin(); itPartition != mapGeneratedPartitions[(*itRelationSDN)->getDataSet()].end(); itPartition++){
+				mapCalculatedInternalIndex[(*itRelationSDN)->getDataSet()][*itPartition][(*itRelationSDN)->getNnList()->getNumberOfNn()][*itValidationIndex] = (*itValidationIndex)->calculate(*itPartition, *itRelationSDN, (*itRelationSDN)->getDataSet());	
+			}
+		}
+	}
+}
+
+// calculate the external validation indexes
 void Clex::calculateExternalIndex(){
 	// for each dataset
 	for(vector<DataSet*>::iterator itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
@@ -91,30 +104,38 @@ void Clex::calculateExternalIndex(){
 	}
 }
 
-void Clex::calculateInternalIndex(){
-	for(vector<RelationSDN*>::iterator itRelationSDN = vRelationSDN.begin(); itRelationSDN != vRelationSDN.end(); itRelationSDN++){
-		for(set<ValidationIndex*>::iterator itValidationIndex = sInternalIndex.begin(); itValidationIndex != sInternalIndex.end(); itValidationIndex++){
-			for(vector<Partition*>::iterator itPartition = mapGeneratedPartitions[(*itRelationSDN)->getDataSet()].begin(); itPartition != mapGeneratedPartitions[(*itRelationSDN)->getDataSet()].end(); itPartition++){
-				mapCalculatedInternalIndex[(*itRelationSDN)->getDataSet()][*itPartition][(*itRelationSDN)->getNnList()->getNumberOfNn()][*itValidationIndex] = (*itValidationIndex)->calculate(*itPartition, *itRelationSDN, (*itRelationSDN)->getDataSet());	
+// shows the calculated indexes
+void Clex::showInternalIndex(){
+	cout << "Internal Validation Index" << endl;
+	for(map<DataSet*, map<Partition*, map<int, map<ValidationIndex*, double> > > >::iterator itDataSet = mapCalculatedInternalIndex.begin(); itDataSet != mapCalculatedInternalIndex.end(); itDataSet++){
+		cout << endl << "DataSet: " << itDataSet->first->getNameDataSet() << endl;
+		for(map<Partition*, map<int, map<ValidationIndex*, double> > >::iterator itPartition = mapCalculatedInternalIndex[itDataSet->first].begin(); itPartition != mapCalculatedInternalIndex[itDataSet->first].end(); itPartition++){
+			cout << "Partition: " << itPartition->first->getPartitionName() << endl;
+			for(map<int, map<ValidationIndex*, double> >::iterator itNumNn = mapCalculatedInternalIndex[itDataSet->first][itPartition->first].begin(); itNumNn != mapCalculatedInternalIndex[itDataSet->first][itPartition->first].end(); itNumNn++){
+				cout << "NumNn: " << itNumNn->first << endl;
+				for(map<ValidationIndex*, double>::iterator itValidationIndex = mapCalculatedInternalIndex[itDataSet->first][itPartition->first][itNumNn->first].begin(); itValidationIndex != mapCalculatedInternalIndex[itDataSet->first][itPartition->first][itNumNn->first].end(); itValidationIndex++){
+					cout << typeid(*(itValidationIndex->first)).name() << "\t" << mapCalculatedInternalIndex[itDataSet->first][itPartition->first][itNumNn->first][itValidationIndex->first] << endl;;
+				}
 			}
+			cout << endl;
 		}
 	}
 }
 
-// shows the calculated indexes
-void Clex::showValidationIndex(){
-		/*
-	if(sValidationIndex.find("CRIndex") != sValidationIndex.end())
-		showCRIndex();
-	if(sValidationIndex.find("NMIIndex") != sValidationIndex.end())
-		showNMIIndex();
-	if(sValidationIndex.find("VIIndex") != sValidationIndex.end())
-		showVIIndex();
-	if(sValidationIndex.find("Connectivity") != sValidationIndex.end())
-		showConnectivity();
-	if(sValidationIndex.find("Deviation") != sValidationIndex.end())
-		showDeviation();
-	if(sValidationIndex.find("Silhouette") != sValidationIndex.end())
-		showSilhouette();
-		*/
+// shows the external calculated Indexes
+void Clex::showExternalIndex(){
+	cout << "External Validation Index" << endl;
+	for(map<DataSet*, map<Partition*, map<Partition* , map<ValidationIndex*, double> > > >::iterator itDataSet = mapCalculatedExternalIndex.begin(); itDataSet != mapCalculatedExternalIndex.end(); itDataSet++){
+		cout << endl << "DataSet: " << itDataSet->first->getNameDataSet() << endl;
+		for(map<Partition*, map<Partition*, map<ValidationIndex*, double> > >::iterator itRealPartition = mapCalculatedExternalIndex[itDataSet->first].begin(); itRealPartition != mapCalculatedExternalIndex[itDataSet->first].end(); itRealPartition++){
+			cout << "Real Partition: " << itRealPartition->first->getPartitionName() << endl;
+			for(map<Partition*, map<ValidationIndex*, double> >::iterator itGeneratedPartition = mapCalculatedExternalIndex[itDataSet->first][itRealPartition->first].begin(); itGeneratedPartition != mapCalculatedExternalIndex[itDataSet->first][itRealPartition->first].end(); itGeneratedPartition++){
+				cout << "Generated Partition: " << itGeneratedPartition->first->getPartitionName() << endl;
+				for(map<ValidationIndex*, double>::iterator itValidationIndex = mapCalculatedExternalIndex[itDataSet->first][itRealPartition->first][itGeneratedPartition->first].begin(); itValidationIndex != mapCalculatedExternalIndex[itDataSet->first][itRealPartition->first][itGeneratedPartition->first].end(); itValidationIndex++){
+					cout << typeid(*(itValidationIndex->first)).name() << "\t" << mapCalculatedExternalIndex[itDataSet->first][itRealPartition->first][itGeneratedPartition->first][itValidationIndex->first] << endl;;
+				}
+			}
+			cout << endl;
+		}
+	}
 }
