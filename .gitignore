@@ -1,5 +1,9 @@
 *~
 *.o
+*.so
+*.pyc
+*.cxx
+Clex_module*
 teste
 main
 *.swp

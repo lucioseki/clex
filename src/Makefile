@@ -1,10 +1,13 @@
 CC = g++
 OUTPUT=main
 FLAGS = -lboost_system -lboost_filesystem
+PYTHON_FLAG = -I/usr/include/python2.7
 OBJS = Object.o Cluster.o DataSet.o Partition.o Similarity.o Euclidean.o Pearson.o ValidationIndex.o InformationTheory.o NMIIndex.o VIIndex.o CRIndex.o RelationSDN.o SimilarityMatrix.o NnList.o Connectivity.o Deviation.o Silhouette.o Clex.o
 
-$(OUTPUT): main.cpp Clex.o Euclidean.o Pearson.o
-	$(CC) main.cpp -o $(OUTPUT) $(OBJS) $(FLAGS)
+_Clex_module.so: Clex.i Clex.h $(OBJS)
+	swig -python -c++ Clex.i
+	$(CC) -c -fpic Clex.cpp Clex_wrap.cxx $(PYTHON_FLAG)
+	$(CC) -shared *.o -o _Clex_module.so $(FLAGS)
 
 Clex.o: Clex.h Clex.cpp Partition.o DataSet.o ValidationIndex.o Similarity.o Euclidean.o Pearson.o RelationSDN.o NMIIndex.o VIIndex.o CRIndex.o Connectivity.o Deviation.o Silhouette.o SimilarityMatrix.o
 	$(CC) -c Clex.cpp $(FLAGS)
@@ -70,4 +73,4 @@ Object.o: Object.h Object.cpp
 	$(CC) -c Object.cpp
 
 clean:
-	rm *~ *.o
+	rm *~ *.o *Clex_module* *.cxx
