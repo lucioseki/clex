@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # main loop of the program
 
-#import Clex_wrap
 from gi.repository import Gtk
 from SelectWindow import *
 from Clex_module import *
+from os import path
+from urlparse import urlparse 
 
 class DataSetWindow(SelectWindow):
 	def __init__(self):
@@ -27,7 +28,6 @@ class SimilarityWindow(Gtk.Window):
 		Gtk.Window.__init__(self, title="Select Similarity Measures")
 
 class MainWindow(Gtk.Window):
-	
 	def __init__(self):
 		# Create a new window
 		Gtk.Window.__init__(self, title="Clustering Experimenter")
@@ -37,7 +37,7 @@ class MainWindow(Gtk.Window):
 		self.hbox = Gtk.HBox(spacing=6)
 		self.bbox1 = Gtk.VButtonBox(spacing=6)
 		self.bbox2 = Gtk.VButtonBox(spacing=6)
-		self.bbox3 = Gtk.VButtonBox(spacing=6)
+		self.bbox3 = Gtk.HButtonBox(spacing=6)
 		self.bbox1.set_layout(Gtk.ButtonBoxStyle.START)
 		self.bbox2.set_layout(Gtk.ButtonBoxStyle.START)
 		self.bbox3.set_layout(Gtk.ButtonBoxStyle.START)
@@ -53,6 +53,7 @@ class MainWindow(Gtk.Window):
 		self.button_generated_partition = Gtk.Button(label="Set Generated Partitions")
 		self.button_similarity = Gtk.Button(label="Set Similarity Measure")
 		self.button_validation = Gtk.Button(label="Set Validation Indexes")
+		self.button_run = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
 		self.button_close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
 
 		# Connect the callback functions to the click event
@@ -61,6 +62,7 @@ class MainWindow(Gtk.Window):
 		self.button_generated_partition.connect("clicked", self.on_button_generated_partition_clicked, "Generated")
 		self.button_similarity.connect("clicked", self.on_button_similarity_clicked)
 		self.button_validation.connect("clicked", self.on_button_validation_clicked)
+		self.button_run.connect("clicked", self.on_button_run_clicked)
 		self.button_close.connect("clicked", self.on_button_close_clicked)
 
 		# Associate the buttons to the containers
@@ -69,6 +71,7 @@ class MainWindow(Gtk.Window):
 		self.bbox1.pack_start(self.button_generated_partition, True, True, 0)
 		self.bbox2.pack_start(self.button_similarity, True, True, 0)
 		self.bbox2.pack_start(self.button_validation, True, True, 0)
+		self.bbox3.pack_start(self.button_run, True, True, 0)
 		self.bbox3.pack_start(self.button_close, True, True, 0)
 
 		self.win_dataset = DataSetWindow()
@@ -94,6 +97,18 @@ class MainWindow(Gtk.Window):
 
 	def on_button_close_clicked(self, widget):
 		Gtk.main_quit()
+
+	def on_button_run_clicked(self, widget):
+		# instanciate Clex
+		self.clex = Clex()
+
+		# instanciate DataSets
+		self.win_dataset_list = self.win_dataset.get_selection_list()
+		self.dataset_list = StrPairVector(len(self.win_dataset_list))
+		for i in range(0, len(self.dataset_list)):
+			self.head, self.tail = path.split(self.win_dataset_list[i][0])
+			self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
+		self.clex.setDataSet(self.dataset_list)
 
 win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)

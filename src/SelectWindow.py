@@ -14,13 +14,13 @@ class SelectWindow(Gtk.Window):
 		self.hide()
 
 	def on_button_ok_clicked(self, widget):
-		self.listPath = []
+		self.selection_list = []
 		for row in self.store:
-			self.listPath.append(row)
+			self.selection_list.append(row)
 		self.hide()
 
-	def get_listPath(self):
-		return self.listPath
+	def get_selection_list(self):
+		return self.selection_list
 
 	def on_button_rm_clicked(self, widget):
 		iters = [self.treemodel.get_iter(path) for path in self.selected]
