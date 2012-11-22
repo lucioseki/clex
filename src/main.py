@@ -9,6 +9,7 @@ from urlparse import urlparse
 
 class DataSetWindow(SelectWindow):
 	def __init__(self):
+		self.selection_list = None
 		SelectWindow.__init__(self, title="Select DataSets")
 
 class RealPartitionWindow(SelectWindow):
@@ -137,20 +138,29 @@ class MainWindow(Gtk.Window):
 
 	def on_button_execute_clicked(self, widget):
 		# instanciate Clex
+		print ">> Creating Clex instance..."
 		self.clex = Clex()
+		print ">> Clex instance created."
 		
+		print ">> Setting Similarity measure..."
 		self.clex.setSimilarity(self.win_similarity.get_similarity())
+		print ">> Similarity measure setted."
 
+		print ">> Setting DataSets..."
 		# instanciate DataSets
 		self.win_dataset_list = self.win_dataset.get_selection_list()
-		self.dataset_list = StrPairVector(len(self.win_dataset_list))
-		for i in range(0, len(self.dataset_list)):
-			# splittng directory from the filename
-			self.head, self.tail = path.split(self.win_dataset_list[i][0])
-			# cutting 'file://' off and converting unicode to bytecode and creating a pair of strings
-			self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
-
-		self.clex.setDataSet(self.dataset_list)
+		if(self.win_dataset_list != None):
+			self.dataset_list = StrPairVector(len(self.win_dataset_list))
+			for i in range(0, len(self.dataset_list)):
+				# splittng directory from the filename
+				self.head, self.tail = path.split(self.win_dataset_list[i][0])
+				# cutting 'file://' off and converting unicode to bytecode and creating a pair of strings
+				self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
+		
+			self.clex.setDataSet(self.dataset_list)
+			print ">> DataSets setted."
+		else:
+			print ">> No DataSets selected."
 
 win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)
