@@ -143,7 +143,7 @@ class MainWindow(Gtk.Window):
 		print ">> Clex instance created."
 		
 		print ">> Setting Similarity measure..."
-		self.clex.setSimilarity(self.win_similarity.get_similarity())
+		self.clex.setSimilarity(self.win_similarity.get_similarity().encode())
 		print ">> Similarity measure setted."
 
 		print ">> Setting DataSets..."
