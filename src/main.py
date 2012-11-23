@@ -2,25 +2,21 @@
 # main loop of the program
 
 from gi.repository import Gtk
-from SelectWindow import *
+from DataSetWindow import *
+from PartitionWindow import *
 from SimilarityWindow import *
 from ValidationWindow import *
 from Clex_module import *
 from os import path
 from urlparse import urlparse 
 
-class DataSetWindow(SelectWindow):
+class RealPartitionWindow(PartitionWindow):
 	def __init__(self):
-		self.selection_list = None
-		SelectWindow.__init__(self, title="Select DataSets")
+		PartitionWindow.__init__(self, title="Select Real Partitions")
 
-class RealPartitionWindow(SelectWindow):
+class GeneratedPartitionWindow(PartitionWindow):
 	def __init__(self):
-		SelectWindow.__init__(self, title="Select Real Partitions")
-
-class GeneratedPartitionWindow(SelectWindow):
-	def __init__(self):
-		SelectWindow.__init__(self, title="Select Generated Partitions")
+		PartitionWindow.__init__(self, title="Select Generated Partitions")
 
 class MainWindow(Gtk.Window):
 	def __init__(self):
