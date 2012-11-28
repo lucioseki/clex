@@ -73,4 +73,4 @@ Object.o: Object.h Object.cpp
 	$(CC) -c Object.cpp
 
 clean:
-	rm *~ *.o *Clex_module* *.cxx
+	rm *~ *.o *Clex_module* *.cxx *.pyc
