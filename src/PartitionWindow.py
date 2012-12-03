@@ -6,6 +6,10 @@ class PartitionWindow(Gtk.Window):
 	def get_selection_list(self):
 		return self.selection_list
 
+	def set_dataset_list(self, dataset_list):
+		for row in dataset_list:
+			self.dataset_listbox.store.append(row[:])
+
 	def on_button_ok_clicked(self, widget):
 		self.selection_list = []
 		for row in self.partition_listbox.store:

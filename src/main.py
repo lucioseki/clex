@@ -65,25 +65,28 @@ class MainWindow(Gtk.Window):
 		self.bbox3.pack_start(self.button_execute, True, True, 0)
 		self.bbox3.pack_start(self.button_close, True, True, 0)
 
-		self.win_dataset = DataSetWindow()
-		self.win_real_partition = RealPartitionWindow()
-		self.win_generated_partition = GeneratedPartitionWindow()
-		self.win_validation = ValidationWindow()
-		self.win_similarity = SimilarityWindow()
-
 	def on_button_dataset_clicked(self, widget):
+		self.win_dataset = DataSetWindow()
 		self.win_dataset.show_all()
 
 	def on_button_real_partition_clicked(self, widget, data):
+		self.win_real_partition = RealPartitionWindow()
+		self.win_dataset_list = self.win_dataset.get_selection_list()
+		self.win_real_partition.set_dataset_list(self.win_dataset_list)
 		self.win_real_partition.show_all()
 
 	def on_button_generated_partition_clicked(self, widget, data):
+		self.win_generated_partition = GeneratedPartitionWindow()
+		self.win_dataset_list = self.win_dataset.get_selection_list()
+		self.win_generated_partition.set_dataset_list(self.win_dataset_list)
 		self.win_generated_partition.show_all()
 
 	def on_button_validation_clicked(self, widget):
+		self.win_validation = ValidationWindow()
 		self.win_validation.show_all()
 		
 	def on_button_similarity_clicked(self, widget):
+		self.win_similarity = SimilarityWindow()
 		self.win_similarity.show_all()
 
 	def on_button_close_clicked(self, widget):
