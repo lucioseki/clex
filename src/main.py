@@ -25,18 +25,67 @@ class MainWindow(Gtk.Window):
 		
 		# Containers
 		self.vbox = Gtk.VBox(spacing=6)
+		self.vbox_general = Gtk.VBox(spacing=6)
+		self.vbox_windows = Gtk.VBox(spacing=6)
 		self.hbox = Gtk.HBox(spacing=6)
+		# General Configuration Frame
+		self.frame_general = Gtk.Frame(label="General Settings")
+		self.hbox1 = Gtk.HBox(spacing=6)
+		self.hbox2 = Gtk.HBox(spacing=6)
+		self.hbox3 = Gtk.HBox(spacing=6)
+		self.hbox4 = Gtk.HBox(spacing=6)
+		self.hbox5 = Gtk.HBox(spacing=6)
+		self.hbox6 = Gtk.HBox(spacing=6)
+		# Button Boxes
 		self.bbox1 = Gtk.VButtonBox(spacing=6)
 		self.bbox2 = Gtk.VButtonBox(spacing=6)
 		self.bbox3 = Gtk.HButtonBox(spacing=6)
 		self.bbox1.set_layout(Gtk.ButtonBoxStyle.START)
 		self.bbox2.set_layout(Gtk.ButtonBoxStyle.START)
 		self.bbox3.set_layout(Gtk.ButtonBoxStyle.START)
+		# Packing containers
 		self.hbox.pack_start(self.bbox1, True, True, 0)
 		self.hbox.pack_start(self.bbox2, True, True, 0)
-		self.vbox.pack_start(self.hbox, True, True, 0)
-		self.vbox.pack_start(self.bbox3, True, True, 0)
+		self.vbox_general.pack_start(self.hbox1, True, True, 0)
+		self.vbox_general.pack_start(self.hbox2, True, True, 0)
+		self.vbox_general.pack_start(self.hbox3, True, True, 0)
+		self.vbox_general.pack_start(self.hbox4, True, True, 0)
+		self.vbox_general.pack_start(self.hbox5, True, True, 0)
+		self.vbox_general.pack_start(self.hbox6, True, True, 0)
+		self.vbox_windows.pack_start(self.hbox, True, True, 0)
+		self.vbox_windows.pack_start(self.bbox3, True, True, 0)
+		self.frame_general.add(self.vbox_general)
+		self.vbox.pack_start(self.frame_general, True, True, 0)
+		self.vbox.pack_start(self.vbox_windows, True, True, 0)
 		self.add(self.vbox)
+
+		# General configuration
+		self.label_name = Gtk.Label("Experiment name: ")
+		self.entry_name = Gtk.Entry()
+		self.label_dir = Gtk.Label("Directory: ")
+		self.entry_dir = Gtk.Entry()
+		self.label_time = Gtk.Label("Show execution time: ")
+		self.check_time = Gtk.CheckButton()
+		self.label_min_cluster = Gtk.Label("Min. Cluster number: ")
+		self.spin_min_cluster = Gtk.SpinButton()
+		self.label_max_cluster = Gtk.Label("Max. Cluster number: ")
+		self.spin_max_cluster = Gtk.SpinButton()
+		self.label_times = Gtk.Label("Times to execute: ")
+		self.spin_times = Gtk.SpinButton()
+
+		self.hbox1.pack_start(self.label_name, True, True, 0)
+		self.hbox1.pack_start(self.entry_name, True, True, 0)
+		self.hbox2.pack_start(self.label_dir, True, True, 0)
+		self.hbox2.pack_start(self.entry_dir, True, True, 0)
+		self.hbox3.pack_start(self.label_time, True, True, 0)
+		self.hbox3.pack_start(self.check_time, True, True, 0)
+		self.hbox4.pack_start(self.label_min_cluster, True, True, 0)
+		self.hbox4.pack_start(self.spin_min_cluster, True, True, 0)
+		self.hbox5.pack_start(self.label_max_cluster, True, True, 0)
+		self.hbox5.pack_start(self.spin_max_cluster, True, True, 0)
+		self.hbox6.pack_start(self.label_times, True, True, 0)
+		self.hbox6.pack_start(self.spin_times, True, True, 0)
+
 
 		# Buttons to open other windows
 		self.button_dataset = Gtk.Button(label="Set DataSets")
@@ -44,7 +93,10 @@ class MainWindow(Gtk.Window):
 		self.button_generated_partition = Gtk.Button(label="Set Generated Partitions")
 		self.button_similarity = Gtk.Button(label="Set Similarity Measure")
 		self.button_validation = Gtk.Button(label="Set Validation Indexes")
+		self.button_algorithm = Gtk.Button(label="Set Algorithms")
 		self.button_execute = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
+		self.button_save = Gtk.Button(stock=Gtk.STOCK_SAVE)
+		self.button_open = Gtk.Button(stock=Gtk.STOCK_OPEN)
 		self.button_close = Gtk.Button(stock=Gtk.STOCK_CLOSE)
 
 		# Connect the callback functions to the click event
@@ -54,6 +106,8 @@ class MainWindow(Gtk.Window):
 		self.button_similarity.connect("clicked", self.on_button_similarity_clicked)
 		self.button_validation.connect("clicked", self.on_button_validation_clicked)
 		self.button_execute.connect("clicked", self.on_button_execute_clicked)
+		self.button_save.connect("clicked", self.on_button_save_clicked)
+		self.button_open.connect("clicked", self.on_button_open_clicked)
 		self.button_close.connect("clicked", self.on_button_close_clicked)
 
 		# Associate the buttons to the containers
@@ -62,7 +116,11 @@ class MainWindow(Gtk.Window):
 		self.bbox1.pack_start(self.button_generated_partition, True, True, 0)
 		self.bbox2.pack_start(self.button_similarity, True, True, 0)
 		self.bbox2.pack_start(self.button_validation, True, True, 0)
+		self.bbox2.pack_start(self.button_algorithm, True, True, 0)
+
 		self.bbox3.pack_start(self.button_execute, True, True, 0)
+		self.bbox3.pack_start(self.button_save, True, True, 0)
+		self.bbox3.pack_start(self.button_open, True, True, 0)
 		self.bbox3.pack_start(self.button_close, True, True, 0)
 
 	def on_button_dataset_clicked(self, widget):
@@ -117,6 +175,12 @@ class MainWindow(Gtk.Window):
 			print ">> DataSets setted."
 		else:
 			print ">> No DataSets selected."
+
+	def on_button_save_clicked(self, widget):
+		print 'on_button_save_clicked: not implemented yet' 
+
+	def on_button_open_clicked(self, widget):
+		print 'on_button_open_clicked: not implemented yet' 
 
 win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)
