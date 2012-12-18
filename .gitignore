@@ -7,3 +7,4 @@ Clex_module*
 teste
 main
 *.swp
+src/clustering/*
