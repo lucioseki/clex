@@ -6,7 +6,9 @@ from DataSetWindow import *
 from PartitionWindow import *
 from SimilarityWindow import *
 from ValidationWindow import *
+from AlgorithmWindow import *
 from Clex_module import *
+from subprocess import call
 from os import path
 from urlparse import urlparse 
 
@@ -68,10 +70,17 @@ class MainWindow(Gtk.Window):
 		self.check_time = Gtk.CheckButton()
 		self.label_min_cluster = Gtk.Label("Min. Cluster number: ")
 		self.spin_min_cluster = Gtk.SpinButton()
+		self.spin_min_cluster.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
+		self.spin_min_cluster.set_numeric(True)
+
 		self.label_max_cluster = Gtk.Label("Max. Cluster number: ")
 		self.spin_max_cluster = Gtk.SpinButton()
+		self.spin_max_cluster.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
+		self.spin_max_cluster.set_numeric(True)
 		self.label_times = Gtk.Label("Times to execute: ")
 		self.spin_times = Gtk.SpinButton()
+		self.spin_times.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
+		self.spin_times.set_numeric(True)
 
 		self.hbox1.pack_start(self.label_name, True, True, 0)
 		self.hbox1.pack_start(self.entry_name, True, True, 0)
@@ -88,9 +97,9 @@ class MainWindow(Gtk.Window):
 
 
 		# Buttons to open other windows
-		self.button_dataset = Gtk.Button(label="Set DataSets")
-		self.button_real_partition = Gtk.Button(label="Set Real Partitions")
-		self.button_generated_partition = Gtk.Button(label="Set Generated Partitions")
+		self.button_dataset = Gtk.Button(label="Load DataSets")
+		self.button_real_partition = Gtk.Button(label="Load Real Partitions")
+		self.button_generated_partition = Gtk.Button(label="Load Generated Partitions")
 		self.button_similarity = Gtk.Button(label="Set Similarity Measure")
 		self.button_validation = Gtk.Button(label="Set Validation Indexes")
 		self.button_algorithm = Gtk.Button(label="Set Algorithms")
@@ -105,6 +114,7 @@ class MainWindow(Gtk.Window):
 		self.button_generated_partition.connect("clicked", self.on_button_generated_partition_clicked, "Generated")
 		self.button_similarity.connect("clicked", self.on_button_similarity_clicked)
 		self.button_validation.connect("clicked", self.on_button_validation_clicked)
+		self.button_algorithm.connect("clicked", self.on_button_algorithm_clicked)
 		self.button_execute.connect("clicked", self.on_button_execute_clicked)
 		self.button_save.connect("clicked", self.on_button_save_clicked)
 		self.button_open.connect("clicked", self.on_button_open_clicked)
@@ -143,6 +153,10 @@ class MainWindow(Gtk.Window):
 		self.win_validation = ValidationWindow()
 		self.win_validation.show_all()
 		
+	def on_button_algorithm_clicked(self, widget):
+		self.win_algorithm = AlgorithmWindow()
+		self.win_algorithm.show_all()
+
 	def on_button_similarity_clicked(self, widget):
 		self.win_similarity = SimilarityWindow()
 		self.win_similarity.show_all()
@@ -160,7 +174,7 @@ class MainWindow(Gtk.Window):
 		self.clex.setSimilarity(self.win_similarity.get_similarity().encode())
 		print ">> Similarity measure setted."
 
-		print ">> Setting DataSets..."
+		print ">> Loading DataSets..."
 		# instanciate DataSets
 		self.win_dataset_list = self.win_dataset.get_selection_list()
 		if(self.win_dataset_list != None):
@@ -172,9 +186,12 @@ class MainWindow(Gtk.Window):
 				self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
 		
 			self.clex.setDataSet(self.dataset_list)
-			print ">> DataSets setted."
+			print ">> DataSets loaded."
 		else:
 			print ">> No DataSets selected."
+
+		# Call clustering program
+		call([self.win_algorithm.get_call_string(), "-v"])
 
 	def on_button_save_clicked(self, widget):
 		print 'on_button_save_clicked: not implemented yet' 
