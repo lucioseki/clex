@@ -38,3 +38,5 @@ class DataSetWindow(Gtk.Window):
 		self.mainbox.pack_start(self.listbox, True, True, 0)
 		self.mainbox.pack_start(self.buttonbox, False, True, 0)
 		self.add(self.mainbox)
+
+		self.selection_list = []
