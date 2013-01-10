@@ -27,8 +27,8 @@ class PartitionWindow(Gtk.Window):
 		# containers
 		self.mainbox = Gtk.VBox()
 		self.listbox = Gtk.HBox()
-		self.dataset_listbox = FileList()
-		self.partition_listbox = FileList()
+		self.dataset_listbox = FileList("DataSet")
+		self.partition_listbox = FileList("Partition")
 
 		self.buttonbox = Gtk.HButtonBox()
 		self.buttonbox.set_layout(Gtk.ButtonBoxStyle.START)

@@ -1,7 +1,7 @@
 from gi.repository import Gtk
 
 class FileList(Gtk.HBox):
-	def __init__(self):
+	def __init__(self, string):
 		Gtk.HBox.__init__(self)
 
 		self.listcontrolbox = Gtk.VButtonBox()
@@ -13,7 +13,7 @@ class FileList(Gtk.HBox):
 		# view for the list of files
 		self.treeview = Gtk.TreeView(self.store)
 		self.renderer = Gtk.CellRendererText()
-		self.column = Gtk.TreeViewColumn("Path", self.renderer, text=0)
+		self.column = Gtk.TreeViewColumn(string + " file name", self.renderer, text=0)
 		self.treeview.append_column(self.column)
 		
 		self.selection = self.treeview.get_selection()

@@ -22,7 +22,7 @@ class DataSetWindow(Gtk.Window):
 
 		# containers
 		self.mainbox = Gtk.VBox()
-		self.listbox = FileList()
+		self.listbox = FileList("DataSet")
 
 		self.buttonbox = Gtk.HButtonBox()
 		self.buttonbox.set_layout(Gtk.ButtonBoxStyle.START)

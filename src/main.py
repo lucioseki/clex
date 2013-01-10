@@ -31,6 +31,7 @@ class MainWindow(Gtk.Window):
 		self.vbox_general = Gtk.VBox(spacing=6)
 		self.vbox_windows = Gtk.VBox(spacing=6)
 		self.hbox = Gtk.HBox(spacing=6)
+
 		# General Configuration Frame
 		self.frame_general = Gtk.Frame(label="General Settings")
 		self.hbox1 = Gtk.HBox(spacing=6)
@@ -39,6 +40,7 @@ class MainWindow(Gtk.Window):
 		self.hbox4 = Gtk.HBox(spacing=6)
 		self.hbox5 = Gtk.HBox(spacing=6)
 		self.hbox6 = Gtk.HBox(spacing=6)
+
 		# Button Boxes
 		self.bbox1 = Gtk.VButtonBox(spacing=6)
 		self.bbox2 = Gtk.VButtonBox(spacing=6)
@@ -46,6 +48,7 @@ class MainWindow(Gtk.Window):
 		self.bbox1.set_layout(Gtk.ButtonBoxStyle.START)
 		self.bbox2.set_layout(Gtk.ButtonBoxStyle.START)
 		self.bbox3.set_layout(Gtk.ButtonBoxStyle.START)
+
 		# Packing containers
 		self.hbox.pack_start(self.bbox1, True, True, 0)
 		self.hbox.pack_start(self.bbox2, True, True, 0)
