@@ -5,7 +5,8 @@ from gi.repository import Gtk
 from DataSetWindow import *
 from PartitionWindow import *
 from SimilarityWindow import *
-from ValidationWindow import *
+from ExternalValidationWindow import *
+from InternalValidationWindow import *
 from AlgorithmWindow import *
 from Clex_module import *
 from subprocess import call
@@ -105,7 +106,8 @@ class MainWindow(Gtk.Window):
 		self.button_real_partition = Gtk.Button(label="Load Real Partitions")
 		self.button_generated_partition = Gtk.Button(label="Load Generated Partitions")
 		self.button_similarity = Gtk.Button(label="Set Similarity Measure")
-		self.button_validation = Gtk.Button(label="Set Validation Indexes")
+		self.button_external_validation = Gtk.Button(label="Set External Validation Indexes")
+		self.button_internal_validation = Gtk.Button(label="Set Internal Validation Indexes")
 		self.button_algorithm = Gtk.Button(label="Set Algorithms")
 		self.button_execute = Gtk.Button(stock=Gtk.STOCK_EXECUTE)
 		self.button_save = Gtk.Button(stock=Gtk.STOCK_SAVE)
@@ -117,7 +119,8 @@ class MainWindow(Gtk.Window):
 		self.button_real_partition.connect("clicked", self.on_button_real_partition_clicked, "Real")
 		self.button_generated_partition.connect("clicked", self.on_button_generated_partition_clicked, "Generated")
 		self.button_similarity.connect("clicked", self.on_button_similarity_clicked)
-		self.button_validation.connect("clicked", self.on_button_validation_clicked)
+		self.button_external_validation.connect("clicked", self.on_button_external_validation_clicked)
+		self.button_internal_validation.connect("clicked", self.on_button_internal_validation_clicked)
 		self.button_algorithm.connect("clicked", self.on_button_algorithm_clicked)
 		self.button_execute.connect("clicked", self.on_button_execute_clicked)
 		self.button_save.connect("clicked", self.on_button_save_clicked)
@@ -129,7 +132,8 @@ class MainWindow(Gtk.Window):
 		self.bbox1.pack_start(self.button_real_partition, True, True, 0)
 		self.bbox1.pack_start(self.button_generated_partition, True, True, 0)
 		self.bbox2.pack_start(self.button_similarity, True, True, 0)
-		self.bbox2.pack_start(self.button_validation, True, True, 0)
+		self.bbox2.pack_start(self.button_external_validation, True, True, 0)
+		self.bbox2.pack_start(self.button_internal_validation, True, True, 0)
 		self.bbox2.pack_start(self.button_algorithm, True, True, 0)
 
 		self.bbox3.pack_start(self.button_execute, True, True, 0)
@@ -137,10 +141,12 @@ class MainWindow(Gtk.Window):
 		self.bbox3.pack_start(self.button_open, True, True, 0)
 		self.bbox3.pack_start(self.button_close, True, True, 0)
 
+		# Create the windows
 		self.win_dataset = DataSetWindow();
 		self.win_real_partition = RealPartitionWindow()
 		self.win_generated_partition = GeneratedPartitionWindow()
-		self.win_validation = ValidationWindow()
+		self.win_external_validation = ExternalValidationWindow()
+		self.win_internal_validation = InternalValidationWindow()
 		self.win_algorithm = AlgorithmWindow()
 		self.win_similarity = SimilarityWindow()
 
@@ -157,8 +163,11 @@ class MainWindow(Gtk.Window):
 		self.win_generated_partition.set_dataset_list(self.win_dataset_list)
 		self.win_generated_partition.show_all()
 
-	def on_button_validation_clicked(self, widget):
-		self.win_validation.show_all()
+	def on_button_external_validation_clicked(self, widget):
+		self.win_external_validation.show_all()
+		
+	def on_button_internal_validation_clicked(self, widget):
+		self.win_internal_validation.show_all()
 		
 	def on_button_algorithm_clicked(self, widget):
 		self.win_algorithm.show_all()
@@ -188,7 +197,7 @@ class MainWindow(Gtk.Window):
 		for i in range(0, len(self.similarity_list)):
 			self.similarity_list[i] = self.win_similarity_list[i]
 		self.clex.setSimilarity(self.similarity_list)
-		print ">> Similarity measure setted."
+		print ">> Similarity measures setted."
 
 		# instanciate DataSets
 		print ">> Loading DataSets..."
@@ -206,6 +215,26 @@ class MainWindow(Gtk.Window):
 	
 		self.clex.setDataSet(self.dataset_list)
 		print ">> DataSets loaded."
+
+		# instanciate External Validation Indexes
+		print ">> Setting External Validation Indexes..."
+		self.win_external_validation_list = self.win_external_validation.get_selection_list()
+		if(self.win_external_validation_list != []):
+			self.external_validation_list = StrVector(len(self.win_external_validation_list))
+			for i in range(0, len(self.external_validation_list)):
+				self.external_validation_list[i] = self.win_external_validation_list[i]
+			self.clex.setExternalIndex(self.external_validation_list)
+		print ">> External Validation Indexes setted."
+
+		# instanciate Internal Validation Indexes
+		print ">> Setting Internal Validation Indexes..."
+		self.win_internal_validation_list = self.win_internal_validation.get_selection_list()
+		if(self.win_internal_validation_list != []):
+			self.internal_validation_list = StrVector(len(self.win_internal_validation_list))
+			for i in range(0, len(self.internal_validation_list)):
+				self.internal_validation_list[i] = self.win_internal_validation_list[i]
+			self.clex.setInternalIndex(self.internal_validation_list)
+		print ">> Internal Validation Indexes setted."
 
 		# Call clustering program
 		call([self.win_algorithm.get_call_string(), "-v"])
