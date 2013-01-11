@@ -15,7 +15,7 @@
 class Clex{
 
 	private:
-		Similarity *pSimilarity; //< pointer to the measure of Similarity
+		vector<Similarity*> vSimilarity; //< vector containing pointers to the Similarity indexes to be used
 		map<string, Similarity*> mapSimilarity;
 
 		vector<DataSet*> vDataSet; //< vector containing pointers to the DataSets
@@ -43,7 +43,7 @@ class Clex{
 		Clex();
 
 		// sets the similarity measure
-		void setSimilarity(const string &sASimilarity);
+		void setSimilarity(const vector<string> &vASSimilarity);
 
 		// sets the DataSets
 		// @param a vector of paths for each DataSet

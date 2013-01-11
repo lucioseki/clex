@@ -22,8 +22,10 @@ Clex::Clex(){
 }
 
 // sets the similarity measure
-void Clex::setSimilarity(const string &sASimilarity){
-	pSimilarity = mapSimilarity[sASimilarity];
+void Clex::setSimilarity(const vector<string> &vASSimilarity){
+	for(int i = 0; i < vASSimilarity.size(); i++){
+		vSimilarity.push_back(mapSimilarity[vASSimilarity[i]]);
+	}
 }
 
 // sets the DataSet vector
@@ -52,7 +54,9 @@ void Clex::setInternalIndex(vector<string> &vASValidationIndex){
 // creates RelationSDN for each combination of Similarity, DataSet and NumNn
 void Clex::createRelationSDN(int iANumNn){
 	for(vector<DataSet*>::iterator itDataSet = vDataSet.begin(); itDataSet != vDataSet.end(); itDataSet++){
-		vRelationSDN.push_back(new RelationSDN(pSimilarity, *itDataSet, iANumNn));
+		for(vector<Similarity*>::iterator itSimilarity = vSimilarity.begin(); itSimilarity != vSimilarity.end(); itSimilarity++){
+			vRelationSDN.push_back(new RelationSDN(*itSimilarity, *itDataSet, iANumNn));
+		}
 	}
 }
 
