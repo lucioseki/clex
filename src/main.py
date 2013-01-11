@@ -170,30 +170,42 @@ class MainWindow(Gtk.Window):
 		Gtk.main_quit()
 
 	def on_button_execute_clicked(self, widget):
+
 		# instanciate Clex
 		print ">> Creating Clex instance..."
 		self.clex = Clex()
 		print ">> Clex instance created."
 		
+		# instanciate Similarity Measures
 		print ">> Setting Similarity measure..."
-		self.clex.setSimilarity(self.win_similarity.get_similarity().encode())
+		self.win_similarity_list = self.win_similarity.get_selection_list()
+
+		if(self.win_similarity_list == []):
+			print ">> No Similarities selected."
+			return;
+
+		self.similarity_list = StrVector(len(self.win_similarity_list))
+		for i in range(0, len(self.similarity_list)):
+			self.similarity_list[i] = self.win_similarity_list[i]
+		self.clex.setSimilarity(self.similarity_list)
 		print ">> Similarity measure setted."
 
-		print ">> Loading DataSets..."
 		# instanciate DataSets
+		print ">> Loading DataSets..."
 		self.win_dataset_list = self.win_dataset.get_selection_list()
-		if(self.win_dataset_list != None):
-			self.dataset_list = StrPairVector(len(self.win_dataset_list))
-			for i in range(0, len(self.dataset_list)):
-				# splittng directory from the filename
-				self.head, self.tail = path.split(self.win_dataset_list[i][0])
-				# cutting 'file://' off and converting unicode to bytecode and creating a pair of strings
-				self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
-		
-			self.clex.setDataSet(self.dataset_list)
-			print ">> DataSets loaded."
-		else:
+		if(self.win_dataset_list == []):
 			print ">> No DataSets selected."
+			return;
+
+		self.dataset_list = StrPairVector(len(self.win_dataset_list))
+		for i in range(0, len(self.dataset_list)):
+			# split directory name from the filename
+			self.head, self.tail = path.split(self.win_dataset_list[i][0])
+			# cut 'file://' off, convert unicode to bytecode, and create a pair of strings
+			self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
+	
+		self.clex.setDataSet(self.dataset_list)
+		print ">> DataSets loaded."
 
 		# Call clustering program
 		call([self.win_algorithm.get_call_string(), "-v"])
