@@ -63,6 +63,3 @@ class AlgorithmWindow(Gtk.Window):
 
 	def get_call_string(self):
 		return self.call_string
-	
-	def get_params(self):
-		return "" 

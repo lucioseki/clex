@@ -236,14 +236,32 @@ class MainWindow(Gtk.Window):
 			self.clex.setInternalIndex(self.internal_validation_list)
 		print ">> Internal Validation Indexes setted."
 
-		# Call clustering program
-		call([self.win_algorithm.get_call_string(), "-v"])
+		# Clustering program
+		self.cluster_program = self.win_algorithm.get_call_string()
+
+		# Prepare the calling string
+		self.call_list = []
+		self.win_algorithm_list = self.win_algorithm.get_selection_list()
+		for algorithm in self.win_algorithm_list:
+			print algorithm
+			if (algorithm == "K-means"):
+				for k in range(self.get_minK(), self.get_maxK() + 1):
+					self.call_list.append([self.cluster_program, "-k", str(k)])
+
+		for call_string in self.call_list:
+			call(call_string)
 
 	def on_button_save_clicked(self, widget):
 		print 'on_button_save_clicked: not implemented yet' 
 
 	def on_button_open_clicked(self, widget):
 		print 'on_button_open_clicked: not implemented yet' 
+
+	def get_minK(self):
+		return self.spin_min_cluster.get_value_as_int()
+
+	def get_maxK(self):
+		return self.spin_max_cluster.get_value_as_int()
 
 win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)
