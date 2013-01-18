@@ -258,6 +258,8 @@ class MainWindow(Gtk.Window):
 
 		print ">> Clustering Algorithms completed running."
 
+
+	# Save the Experiment Configuration to a file
 	def on_button_save_clicked(self, widget):
 		# Open output file
 		self.savefilechooser = Gtk.FileChooserDialog("Please select saving path", self, Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
@@ -287,13 +289,15 @@ class MainWindow(Gtk.Window):
 		self.savedata["ExecutionTimes"] = self.spin_times.get_value()
 		self.savedata["ShowTime"] = self.check_time.get_active()
 
+		# Writing to the file
 		print ">> Saving Configuration..."
 		print ">> " + json.dumps(self.savedata)
 		json.dump(self.savedata, outfile)
-		# outfile.write(unicode(self.savedata))
 		outfile.close()
 		print ">> Configuration Saved Successfully."
 
+
+	# Load configuration from a previously saved file
 	def on_button_open_clicked(self, widget):
 		# Open input file
 		self.openfilechooser = Gtk.FileChooserDialog("Please select saving path", self, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
@@ -314,17 +318,17 @@ class MainWindow(Gtk.Window):
 			print '>> Error while opening file ' + self.inuri
 			return
 
-		# Construct JSON structure
+		# Construct JSON structure from the read file
 		self.readdata = json.load(infile)
 
-		print self.readdata
+		# Set the attributes recovered from the file
+		print ">> " + json.dumps(self.readdata)
 		self.entry_name.set_text(self.readdata["ExperimentName"])
 		self.entry_dir.set_text(self.readdata["Directory"])
 		self.spin_min_cluster.set_value(self.readdata["MinCluster"])
 		self.spin_max_cluster.set_value(self.readdata["MaxCluster"])
 		self.spin_times.set_value(self.readdata["ExecutionTimes"])
 		self.check_time.set_active(self.readdata["ShowTime"])
-
 
 		infile.close()
 
