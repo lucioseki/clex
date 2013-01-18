@@ -12,7 +12,8 @@ from Clex_module import *
 from subprocess import call
 from os import path
 from urlparse import urlparse 
-
+import io
+import json
 
 class RealPartitionWindow(PartitionWindow):
 	def __init__(self):
@@ -71,8 +72,7 @@ class MainWindow(Gtk.Window):
 		self.entry_name = Gtk.Entry()
 		self.label_dir = Gtk.Label("Directory: ")
 		self.entry_dir = Gtk.Entry()
-		self.label_time = Gtk.Label("Show execution time: ")
-		self.check_time = Gtk.CheckButton()
+
 		self.label_min_cluster = Gtk.Label("Min. Cluster number: ")
 		self.spin_min_cluster = Gtk.SpinButton()
 		self.spin_min_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
@@ -86,19 +86,21 @@ class MainWindow(Gtk.Window):
 		self.spin_times = Gtk.SpinButton()
 		self.spin_times.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
 		self.spin_times.set_numeric(True)
+		self.label_time = Gtk.Label("Show execution time: ")
+		self.check_time = Gtk.CheckButton()
 
 		self.hbox1.pack_start(self.label_name, True, True, 0)
 		self.hbox1.pack_start(self.entry_name, True, True, 0)
 		self.hbox2.pack_start(self.label_dir, True, True, 0)
 		self.hbox2.pack_start(self.entry_dir, True, True, 0)
-		self.hbox3.pack_start(self.label_time, True, True, 0)
-		self.hbox3.pack_start(self.check_time, True, True, 0)
-		self.hbox4.pack_start(self.label_min_cluster, True, True, 0)
-		self.hbox4.pack_start(self.spin_min_cluster, True, True, 0)
-		self.hbox5.pack_start(self.label_max_cluster, True, True, 0)
-		self.hbox5.pack_start(self.spin_max_cluster, True, True, 0)
-		self.hbox6.pack_start(self.label_times, True, True, 0)
-		self.hbox6.pack_start(self.spin_times, True, True, 0)
+		self.hbox3.pack_start(self.label_min_cluster, True, True, 0)
+		self.hbox3.pack_start(self.spin_min_cluster, True, True, 0)
+		self.hbox4.pack_start(self.label_max_cluster, True, True, 0)
+		self.hbox4.pack_start(self.spin_max_cluster, True, True, 0)
+		self.hbox5.pack_start(self.label_times, True, True, 0)
+		self.hbox5.pack_start(self.spin_times, True, True, 0)
+		self.hbox6.pack_start(self.label_time, True, True, 0)
+		self.hbox6.pack_start(self.check_time, True, True, 0)
 
 
 		# Buttons to open other windows
@@ -257,7 +259,39 @@ class MainWindow(Gtk.Window):
 		print ">> Clustering Algorithms completed running."
 
 	def on_button_save_clicked(self, widget):
-		print 'on_button_save_clicked: not implemented yet' 
+		# Open output file
+		self.savefilechooser = Gtk.FileChooserDialog("Please select saving path", self, Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+
+		self.response = self.savefilechooser.run()
+		if self.response != Gtk.ResponseType.OK:
+			self.savefilechooser.destroy()
+			return
+
+		self.outuri = self.savefilechooser.get_uri()
+		self.savefilechooser.destroy()
+
+		if self.outuri == None:
+			return
+
+		outfile = io.open(urlparse(self.outuri).path, 'w')
+		if ( outfile == None ):
+			print '>> Error while opening file ' + self.outuri
+			return
+
+		# Construct JSON structure
+		self.savedata = { 'ExperimentName': None, 'Directory': None, 'MinCluster': None, 'MaxCluster': None, 'ExecutionTimes': None, 'ShowTime': None, 'DataSet': [], 'RealPartition': [], 'GeneratedPartition': []}
+		self.savedata["ExperimentName"] = self.entry_name.get_text()
+		self.savedata["Directory"] = self.entry_dir.get_text()
+		self.savedata["MinCluster"] = self.spin_min_cluster.get_value()
+		self.savedata["MaxCluster"] = self.spin_max_cluster.get_value()
+		self.savedata["ExecutionTimes"] = self.spin_times.get_value()
+		self.savedata["ShowTime"] = self.check_time.get_active()
+
+		print ">> Saving Configuration..."
+		print ">> " + json.dumps(self.savedata)
+		outfile.write(unicode(self.savedata))
+		outfile.close()
+		print ">> Configuration Saved Successfully."
 
 	def on_button_open_clicked(self, widget):
 		print 'on_button_open_clicked: not implemented yet' 
