@@ -82,7 +82,7 @@ class MainWindow(Gtk.Window):
 		self.spin_max_cluster = Gtk.SpinButton()
 		self.spin_max_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
 		self.spin_max_cluster.set_numeric(True)
-		self.label_times = Gtk.Label("Times to execute: ")
+		self.label_times = Gtk.Label("Times to execute\n non-deterministic\n algorithms: ")
 		self.spin_times = Gtk.SpinButton()
 		self.spin_times.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
 		self.spin_times.set_numeric(True)
@@ -237,19 +237,24 @@ class MainWindow(Gtk.Window):
 		print ">> Internal Validation Indexes setted."
 
 		# Clustering program
+		print ">> Running Clustering Algorithms..."
 		self.cluster_program = self.win_algorithm.get_call_string()
 
-		# Prepare the calling string
+		# Prepare the calling strings
 		self.call_list = []
 		self.win_algorithm_list = self.win_algorithm.get_selection_list()
-		for algorithm in self.win_algorithm_list:
-			print algorithm
-			if (algorithm == "K-means"):
-				for k in range(self.get_minK(), self.get_maxK() + 1):
-					self.call_list.append([self.cluster_program, "-k", str(k)])
+		for dataset in self.win_dataset_list:
+			for algorithm in self.win_algorithm_list:
+				if (algorithm == "K-means"):
+					for k in range(self.get_minK(), self.get_maxK() + 1):
+						self.call_list.append([self.cluster_program, "-f", urlparse(self.win_dataset_list[i][0]).path, "-k", str(k)])
 
+		# Run the calling strings
 		for call_string in self.call_list:
+			print '>> ' + ' '.join(call_string)
 			call(call_string)
+
+		print ">> Clustering Algorithms completed running."
 
 	def on_button_save_clicked(self, widget):
 		print 'on_button_save_clicked: not implemented yet' 
