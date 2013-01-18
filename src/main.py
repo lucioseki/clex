@@ -273,7 +273,7 @@ class MainWindow(Gtk.Window):
 		if self.outuri == None:
 			return
 
-		outfile = io.open(urlparse(self.outuri).path, 'w')
+		outfile = open(urlparse(self.outuri).path, 'w')
 		if ( outfile == None ):
 			print '>> Error while opening file ' + self.outuri
 			return
@@ -289,12 +289,44 @@ class MainWindow(Gtk.Window):
 
 		print ">> Saving Configuration..."
 		print ">> " + json.dumps(self.savedata)
-		outfile.write(unicode(self.savedata))
+		json.dump(self.savedata, outfile)
+		# outfile.write(unicode(self.savedata))
 		outfile.close()
 		print ">> Configuration Saved Successfully."
 
 	def on_button_open_clicked(self, widget):
-		print 'on_button_open_clicked: not implemented yet' 
+		# Open input file
+		self.openfilechooser = Gtk.FileChooserDialog("Please select saving path", self, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+
+		self.response = self.openfilechooser.run()
+		if self.response != Gtk.ResponseType.OK:
+			self.openfilechooser.destroy()
+			return
+
+		self.inuri = self.openfilechooser.get_uri()
+		self.openfilechooser.destroy()
+
+		if self.inuri == None:
+			return
+
+		infile = open(urlparse(self.inuri).path, 'r')
+		if ( infile == None ):
+			print '>> Error while opening file ' + self.inuri
+			return
+
+		# Construct JSON structure
+		self.readdata = json.load(infile)
+
+		print self.readdata
+		self.entry_name.set_text(self.readdata["ExperimentName"])
+		self.entry_dir.set_text(self.readdata["Directory"])
+		self.spin_min_cluster.set_value(self.readdata["MinCluster"])
+		self.spin_max_cluster.set_value(self.readdata["MaxCluster"])
+		self.spin_times.set_value(self.readdata["ExecutionTimes"])
+		self.check_time.set_active(self.readdata["ShowTime"])
+
+
+		infile.close()
 
 	def get_minK(self):
 		return self.spin_min_cluster.get_value_as_int()
