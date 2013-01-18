@@ -12,8 +12,8 @@ from Clex_module import *
 from subprocess import call
 from os import path
 from urlparse import urlparse 
-import io
 import json
+from datetime import datetime
 
 class RealPartitionWindow(PartitionWindow):
 	def __init__(self):
@@ -41,7 +41,6 @@ class MainWindow(Gtk.Window):
 		self.hbox3 = Gtk.HBox(spacing=6)
 		self.hbox4 = Gtk.HBox(spacing=6)
 		self.hbox5 = Gtk.HBox(spacing=6)
-		self.hbox6 = Gtk.HBox(spacing=6)
 
 		# Button Boxes
 		self.bbox1 = Gtk.VButtonBox(spacing=6)
@@ -59,7 +58,6 @@ class MainWindow(Gtk.Window):
 		self.vbox_general.pack_start(self.hbox3, True, True, 0)
 		self.vbox_general.pack_start(self.hbox4, True, True, 0)
 		self.vbox_general.pack_start(self.hbox5, True, True, 0)
-		self.vbox_general.pack_start(self.hbox6, True, True, 0)
 		self.vbox_windows.pack_start(self.hbox, True, True, 0)
 		self.vbox_windows.pack_start(self.bbox3, True, True, 0)
 		self.frame_general.add(self.vbox_general)
@@ -99,9 +97,6 @@ class MainWindow(Gtk.Window):
 		self.hbox4.pack_start(self.spin_max_cluster, True, True, 0)
 		self.hbox5.pack_start(self.label_times, True, True, 0)
 		self.hbox5.pack_start(self.spin_times, True, True, 0)
-		self.hbox6.pack_start(self.label_time, True, True, 0)
-		self.hbox6.pack_start(self.check_time, True, True, 0)
-
 
 		# Buttons to open other windows
 		self.button_dataset = Gtk.Button(label="Load DataSets")
@@ -183,29 +178,30 @@ class MainWindow(Gtk.Window):
 	def on_button_execute_clicked(self, widget):
 
 		# instanciate Clex
-		print ">> Creating Clex instance..."
+		self.begin = datetime.now()
+		print "%.2fs >> Creating Clex instance..." % .0
 		self.clex = Clex()
-		print ">> Clex instance created."
+		print "%.2fs >> Clex instance created." % self.get_time()
 		
 		# instanciate Similarity Measures
-		print ">> Setting Similarity measure..."
+		print "%.2fs >> Setting Similarity measure..." % self.get_time()
 		self.win_similarity_list = self.win_similarity.get_selection_list()
 
 		if(self.win_similarity_list == []):
-			print ">> No Similarities selected."
+			print "%.2fs >> No Similarities selected." % self.get_time()
 			return;
 
 		self.similarity_list = StrVector(len(self.win_similarity_list))
 		for i in range(0, len(self.similarity_list)):
 			self.similarity_list[i] = self.win_similarity_list[i]
 		self.clex.setSimilarity(self.similarity_list)
-		print ">> Similarity measures setted."
+		print "%.2fs >> Similarity measures setted." % self.get_time()
 
 		# instanciate DataSets
-		print ">> Loading DataSets..."
+		print "%.2fs >> Loading DataSets..." % self.get_time()
 		self.win_dataset_list = self.win_dataset.get_selection_list()
 		if(self.win_dataset_list == []):
-			print ">> No DataSets selected."
+			print "%.2fs >> No DataSets selected."
 			return;
 
 		self.dataset_list = StrPairVector(len(self.win_dataset_list))
@@ -216,30 +212,30 @@ class MainWindow(Gtk.Window):
 			self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
 	
 		self.clex.setDataSet(self.dataset_list)
-		print ">> DataSets loaded."
+		print "%.2fs >> DataSets loaded." % self.get_time()
 
 		# instanciate External Validation Indexes
-		print ">> Setting External Validation Indexes..."
+		print "%.2fs >> Setting External Validation Indexes..." % self.get_time()
 		self.win_external_validation_list = self.win_external_validation.get_selection_list()
 		if(self.win_external_validation_list != []):
 			self.external_validation_list = StrVector(len(self.win_external_validation_list))
 			for i in range(0, len(self.external_validation_list)):
 				self.external_validation_list[i] = self.win_external_validation_list[i]
 			self.clex.setExternalIndex(self.external_validation_list)
-		print ">> External Validation Indexes setted."
+		print "%.2fs >> External Validation Indexes setted." % self.get_time()
 
 		# instanciate Internal Validation Indexes
-		print ">> Setting Internal Validation Indexes..."
+		print "%.2fs >> Setting Internal Validation Indexes..." % self.get_time()
 		self.win_internal_validation_list = self.win_internal_validation.get_selection_list()
 		if(self.win_internal_validation_list != []):
 			self.internal_validation_list = StrVector(len(self.win_internal_validation_list))
 			for i in range(0, len(self.internal_validation_list)):
 				self.internal_validation_list[i] = self.win_internal_validation_list[i]
 			self.clex.setInternalIndex(self.internal_validation_list)
-		print ">> Internal Validation Indexes setted."
+		print "%.2fs >> Internal Validation Indexes setted." % self.get_time()
 
 		# Clustering program
-		print ">> Running Clustering Algorithms..."
+		print "%.2fs >> Running Clustering Algorithms..." % self.get_time()
 		self.cluster_program = self.win_algorithm.get_call_string()
 
 		# Prepare the calling strings
@@ -253,10 +249,10 @@ class MainWindow(Gtk.Window):
 
 		# Run the calling strings
 		for call_string in self.call_list:
-			print '>> ' + ' '.join(call_string)
+			print '%.2fs >> ' % self.get_time() + ' '.join(call_string)
 			call(call_string)
 
-		print ">> Clustering Algorithms completed running."
+		print "%.2fs >> Clustering Algorithms completed running." % self.get_time()
 
 
 	# Save the Experiment Configuration to a file
@@ -277,7 +273,7 @@ class MainWindow(Gtk.Window):
 
 		outfile = open(urlparse(self.outuri).path, 'w')
 		if ( outfile == None ):
-			print '>> Error while opening file ' + self.outuri
+			print '%.2fs >> Error while opening file ' % self.get_time() + self.outuri
 			return
 
 		# Construct JSON structure
@@ -290,11 +286,11 @@ class MainWindow(Gtk.Window):
 		self.savedata["ShowTime"] = self.check_time.get_active()
 
 		# Writing to the file
-		print ">> Saving Configuration..."
-		print ">> " + json.dumps(self.savedata)
+		print "%.2fs >> Saving Configuration..." % self.get_time()
+		print "%.2fs >> " % self.get_time() + json.dumps(self.savedata)
 		json.dump(self.savedata, outfile)
 		outfile.close()
-		print ">> Configuration Saved Successfully."
+		print "%.2fs >> Configuration Saved Successfully." % self.get_time()
 
 
 	# Load configuration from a previously saved file
@@ -315,14 +311,14 @@ class MainWindow(Gtk.Window):
 
 		infile = open(urlparse(self.inuri).path, 'r')
 		if ( infile == None ):
-			print '>> Error while opening file ' + self.inuri
+			print '%.2fs >> Error while opening file ' % self.get_time() + self.inuri
 			return
 
 		# Construct JSON structure from the read file
 		self.readdata = json.load(infile)
 
 		# Set the attributes recovered from the file
-		print ">> " + json.dumps(self.readdata)
+		print "%.2fs >> " % self.get_time() + json.dumps(self.readdata)
 		self.entry_name.set_text(self.readdata["ExperimentName"])
 		self.entry_dir.set_text(self.readdata["Directory"])
 		self.spin_min_cluster.set_value(self.readdata["MinCluster"])
@@ -337,6 +333,10 @@ class MainWindow(Gtk.Window):
 
 	def get_maxK(self):
 		return self.spin_max_cluster.get_value_as_int()
+
+	def get_time(self):
+		now = datetime.now()
+		return ((now - self.begin).total_seconds())
 
 win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)
