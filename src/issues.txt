@@ -1,0 +1,30 @@
+Functions yet to be implemented
+
+Configuration: Create json file holding the configuration of the Experiment
+	Create the json struct from the parameters set by user
+	Save it in a file
+	Load it from a file and set the parameters of the Experiment
+
+FileList: Show a fileselector instead of clicking open button to select files
+
+LogWindow: Show the log in a window
+
+ConfigWindow: Show a log of the setted parameters
+
+SNN: Add SNN to the AlgorithmWindow
+	Also add a configuration window for SNN
+
+FileName: Set the output filenames as follows:
+experimentName/
+ datasetName/
+  realPartition/
+   originalName1.clu
+   originalName2.clu
+   originalNameN.clu
+	generatedPartition/
+	 sAlgorithmShortName-sSimilarityShortName-kNumCluster-rRunNumber.clu
+	 KM-E-k3-r2.clu
+	 KM-P-k4-r3.clu
+
+	 SNN-E-t-n-m-l (details in clustering/main.cpp)
+	 SNN-P-t2-n3-m4-l5.clu
