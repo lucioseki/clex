@@ -8,3 +8,5 @@ teste
 main
 *.swp
 src/clustering/*
+*.clu
+*.err
