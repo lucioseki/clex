@@ -273,7 +273,7 @@ class MainWindow(Gtk.Window):
 
 		outfile = open(urlparse(self.outuri).path, 'w')
 		if ( outfile == None ):
-			print '%.2fs >> Error while opening file ' % self.get_time() + self.outuri
+			print '>> Error while opening file ' + self.outuri
 			return
 
 		# Construct JSON structure
@@ -286,11 +286,11 @@ class MainWindow(Gtk.Window):
 		self.savedata["ShowTime"] = self.check_time.get_active()
 
 		# Writing to the file
-		print "%.2fs >> Saving Configuration..." % self.get_time()
-		print "%.2fs >> " % self.get_time() + json.dumps(self.savedata)
+		print ">> Saving Configuration..."
+		print ">> " + json.dumps(self.savedata)
 		json.dump(self.savedata, outfile)
 		outfile.close()
-		print "%.2fs >> Configuration Saved Successfully." % self.get_time()
+		print ">> Configuration Saved Successfully."
 
 
 	# Load configuration from a previously saved file
@@ -311,14 +311,15 @@ class MainWindow(Gtk.Window):
 
 		infile = open(urlparse(self.inuri).path, 'r')
 		if ( infile == None ):
-			print '%.2fs >> Error while opening file ' % self.get_time() + self.inuri
+			print '>> Error while opening file ' + self.inuri
 			return
 
 		# Construct JSON structure from the read file
+		print ">> Loading Configuration..."
 		self.readdata = json.load(infile)
 
 		# Set the attributes recovered from the file
-		print "%.2fs >> " % self.get_time() + json.dumps(self.readdata)
+		print ">> " + json.dumps(self.readdata)
 		self.entry_name.set_text(self.readdata["ExperimentName"])
 		self.entry_dir.set_text(self.readdata["Directory"])
 		self.spin_min_cluster.set_value(self.readdata["MinCluster"])
@@ -327,6 +328,7 @@ class MainWindow(Gtk.Window):
 		self.check_time.set_active(self.readdata["ShowTime"])
 
 		infile.close()
+		print ">> Configuration Loaded Successfully."
 
 	def get_minK(self):
 		return self.spin_min_cluster.get_value_as_int()
