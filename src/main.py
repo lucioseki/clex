@@ -24,11 +24,15 @@ class GeneratedPartitionWindow(PartitionWindow):
 		PartitionWindow.__init__(self, title="Select Generated Partitions")
 
 class MainWindow(Gtk.Window):
+
+	# Mount view elements
 	def __init__(self):
+
 		# Create a new window
 		Gtk.Window.__init__(self, title="Clustering Experimenter")
 		
 		# Containers
+
 		self.vbox = Gtk.VBox(spacing=6)
 		self.vbox_general = Gtk.VBox(spacing=6)
 		self.vbox_windows = Gtk.VBox(spacing=6)
@@ -65,7 +69,7 @@ class MainWindow(Gtk.Window):
 		self.vbox.pack_start(self.vbox_windows, True, True, 0)
 		self.add(self.vbox)
 
-		# General configuration
+		# General configuration labels and inputs boxes
 		self.label_name = Gtk.Label("Experiment name: ")
 		self.entry_name = Gtk.Entry()
 		self.label_dir = Gtk.Label("Directory: ")
@@ -124,7 +128,7 @@ class MainWindow(Gtk.Window):
 		self.button_open.connect("clicked", self.on_button_open_clicked)
 		self.button_close.connect("clicked", self.on_button_close_clicked)
 
-		# Associate the buttons to the containers
+		# put the buttons into the containers
 		self.bbox1.pack_start(self.button_dataset, True, True, 0)
 		self.bbox1.pack_start(self.button_real_partition, True, True, 0)
 		self.bbox1.pack_start(self.button_generated_partition, True, True, 0)
@@ -138,8 +142,8 @@ class MainWindow(Gtk.Window):
 		self.bbox3.pack_start(self.button_open, True, True, 0)
 		self.bbox3.pack_start(self.button_close, True, True, 0)
 
-		# Create the windows
-		self.win_dataset = DataSetWindow();
+		# Create the other windows
+		self.win_dataset = DataSetWindow()
 		self.win_real_partition = RealPartitionWindow()
 		self.win_generated_partition = GeneratedPartitionWindow()
 		self.win_external_validation = ExternalValidationWindow()
@@ -147,62 +151,75 @@ class MainWindow(Gtk.Window):
 		self.win_algorithm = AlgorithmWindow()
 		self.win_similarity = SimilarityWindow()
 
+	# Open window for selecting Datasets
 	def on_button_dataset_clicked(self, widget):
 		self.win_dataset.show_all()
 
+	# Open window for selecting Real Partitions
 	def on_button_real_partition_clicked(self, widget, data):
 		self.win_dataset_list = self.win_dataset.get_selection_list()
 		self.win_real_partition.set_dataset_list(self.win_dataset_list)
 		self.win_real_partition.show_all()
 
+	# Open window for selecting Generated Partitions
 	def on_button_generated_partition_clicked(self, widget, data):
 		self.win_dataset_list = self.win_dataset.get_selection_list()
 		self.win_generated_partition.set_dataset_list(self.win_dataset_list)
 		self.win_generated_partition.show_all()
 
+	# Open window for selecting External Validation Indexes to be used
 	def on_button_external_validation_clicked(self, widget):
 		self.win_external_validation.show_all()
 		
+	# Open window for selecting Internal Validation Indexes to be used
 	def on_button_internal_validation_clicked(self, widget):
 		self.win_internal_validation.show_all()
 		
+	# Open window for selecting Clustering Algorithms to be used
 	def on_button_algorithm_clicked(self, widget):
 		self.win_algorithm.show_all()
 
+	# Open window for selecting Similarity Indexes to be used
 	def on_button_similarity_clicked(self, widget):
 		self.win_similarity.show_all()
 
-	def on_button_close_clicked(self, widget):
-		Gtk.main_quit()
+	# Return the time elapsed since the Experiment execution started
+	def get_time(self):
+		now = datetime.now()
+		return ((now - self.begin_time).total_seconds())
 
+	# Run the Experiment
 	def on_button_execute_clicked(self, widget):
 
+		print "......................................"
+		print "\n[%.2fs] Starting Experiment..." % .0
+
 		# instanciate Clex
-		self.begin = datetime.now()
-		print "%.2fs >> Creating Clex instance..." % .0
+		self.begin_time = datetime.now()
+		print "\n[%.2fs] Creating Clex instance..." % self.get_time()
 		self.clex = Clex()
-		print "%.2fs >> Clex instance created." % self.get_time()
+		print "[%.2fs] Clex instance created." % self.get_time()
 		
 		# instanciate Similarity Measures
-		print "%.2fs >> Setting Similarity measure..." % self.get_time()
+		print "[%.2fs] Setting Similarity measure..." % self.get_time()
 		self.win_similarity_list = self.win_similarity.get_selection_list()
 
 		if(self.win_similarity_list == []):
-			print "%.2fs >> No Similarities selected." % self.get_time()
-			return;
+			print "[%.2fs] Error: No Similarities selected." % self.get_time()
+			return
 
 		self.similarity_list = StrVector(len(self.win_similarity_list))
 		for i in range(0, len(self.similarity_list)):
 			self.similarity_list[i] = self.win_similarity_list[i]
 		self.clex.setSimilarity(self.similarity_list)
-		print "%.2fs >> Similarity measures setted." % self.get_time()
+		print "[%.2fs] Similarity measures setted." % self.get_time()
 
 		# instanciate DataSets
-		print "%.2fs >> Loading DataSets..." % self.get_time()
+		print "\n[%.2fs] Loading DataSets..." % self.get_time()
 		self.win_dataset_list = self.win_dataset.get_selection_list()
 		if(self.win_dataset_list == []):
-			print "%.2fs >> No DataSets selected."
-			return;
+			print "[%.2fs] Error: No DataSets selected." % self.get_time()
+			return
 
 		self.dataset_list = StrPairVector(len(self.win_dataset_list))
 		for i in range(0, len(self.dataset_list)):
@@ -212,49 +229,62 @@ class MainWindow(Gtk.Window):
 			self.dataset_list[i] = StrPair(urlparse(self.head).path.encode() + '/', self.tail.encode())
 	
 		self.clex.setDataSet(self.dataset_list)
-		print "%.2fs >> DataSets loaded." % self.get_time()
+		print "[%.2fs] DataSets loaded." % self.get_time()
 
 		# instanciate External Validation Indexes
-		print "%.2fs >> Setting External Validation Indexes..." % self.get_time()
+		print "\n[%.2fs] Setting External Validation Indexes..." % self.get_time()
 		self.win_external_validation_list = self.win_external_validation.get_selection_list()
-		if(self.win_external_validation_list != []):
+		if(self.win_external_validation_list == []):
+			print "[%.2fs] No External Validation Indexes selected." % self.get_time()
+		else:
 			self.external_validation_list = StrVector(len(self.win_external_validation_list))
 			for i in range(0, len(self.external_validation_list)):
 				self.external_validation_list[i] = self.win_external_validation_list[i]
 			self.clex.setExternalIndex(self.external_validation_list)
-		print "%.2fs >> External Validation Indexes setted." % self.get_time()
+			print "[%.2fs] External Validation Indexes setted." % self.get_time()
 
 		# instanciate Internal Validation Indexes
-		print "%.2fs >> Setting Internal Validation Indexes..." % self.get_time()
+		print "\n[%.2fs] Setting Internal Validation Indexes..." % self.get_time()
 		self.win_internal_validation_list = self.win_internal_validation.get_selection_list()
-		if(self.win_internal_validation_list != []):
+
+		if(self.win_internal_validation_list == []):
+			print "[%.2fs] No Internal Validation Indexes selected." % self.get_time()
+		else:
 			self.internal_validation_list = StrVector(len(self.win_internal_validation_list))
 			for i in range(0, len(self.internal_validation_list)):
 				self.internal_validation_list[i] = self.win_internal_validation_list[i]
 			self.clex.setInternalIndex(self.internal_validation_list)
-		print "%.2fs >> Internal Validation Indexes setted." % self.get_time()
+		print "[%.2fs] Internal Validation Indexes setted." % self.get_time()
 
 		# Clustering program
-		print "%.2fs >> Running Clustering Algorithms..." % self.get_time()
+		print "\n[%.2fs] Running Clustering Algorithms..." % self.get_time()
 		self.cluster_program = self.win_algorithm.get_call_string()
 
 		# Prepare the calling strings
 		self.call_list = []
 		self.win_algorithm_list = self.win_algorithm.get_selection_list()
+
+		if(self.win_algorithm_list == []):
+			print "[%.2fs] Error: No Clustering Algorithms selected." % self.get_time()
+			return
+
 		for dataset in self.win_dataset_list:
 			for algorithm in self.win_algorithm_list:
 				if (algorithm == "K-means"):
-					for k in range(self.get_minK(), self.get_maxK() + 1):
+					self.minK = self.spin_min_cluster.get_value_as_int()
+					self.maxK = self.spin_max_cluster.get_value_as_int()
+					for k in range(self.minK, self.maxK + 1):
 						self.call_list.append([self.cluster_program, "-f", urlparse(self.win_dataset_list[i][0]).path, "-k", str(k)])
 
 		# Run the calling strings
 		for call_string in self.call_list:
-			print '%.2fs >> ' % self.get_time() + ' '.join(call_string)
+			print "[%.2fs] " % self.get_time() + ' '.join(call_string)
 			call(call_string)
+		print "[%.2fs] Clustering Algorithms completed running." % self.get_time()
 
-		print "%.2fs >> Clustering Algorithms completed running." % self.get_time()
-
-
+		print "\n[%.2fs] Finished running Experiment." % self.get_time()
+	
+	
 	# Save the Experiment Configuration to a file
 	def on_button_save_clicked(self, widget):
 		# Open output file
@@ -273,7 +303,7 @@ class MainWindow(Gtk.Window):
 
 		outfile = open(urlparse(self.outuri).path, 'w')
 		if ( outfile == None ):
-			print '>> Error while opening file ' + self.outuri
+			print 'Error while opening file ' + self.outuri
 			return
 
 		# Construct JSON structure
@@ -285,13 +315,12 @@ class MainWindow(Gtk.Window):
 		self.savedata["ExecutionTimes"] = self.spin_times.get_value()
 		self.savedata["ShowTime"] = self.check_time.get_active()
 
-		# Writing to the file
-		print ">> Saving Configuration..."
-		print ">> " + json.dumps(self.savedata)
+		# Write to the file
+		print "Saving Configuration..."
+		print json.dumps(self.savedata)
 		json.dump(self.savedata, outfile)
 		outfile.close()
-		print ">> Configuration Saved Successfully."
-
+		print "Configuration Saved Successfully."
 
 	# Load configuration from a previously saved file
 	def on_button_open_clicked(self, widget):
@@ -311,15 +340,15 @@ class MainWindow(Gtk.Window):
 
 		infile = open(urlparse(self.inuri).path, 'r')
 		if ( infile == None ):
-			print '>> Error while opening file ' + self.inuri
+			print "Error while opening file " + self.inuri
 			return
 
 		# Construct JSON structure from the read file
-		print ">> Loading Configuration..."
+		print "Loading Configuration..."
 		self.readdata = json.load(infile)
 
 		# Set the attributes recovered from the file
-		print ">> " + json.dumps(self.readdata)
+		print json.dumps(self.readdata)
 		self.entry_name.set_text(self.readdata["ExperimentName"])
 		self.entry_dir.set_text(self.readdata["Directory"])
 		self.spin_min_cluster.set_value(self.readdata["MinCluster"])
@@ -328,18 +357,13 @@ class MainWindow(Gtk.Window):
 		self.check_time.set_active(self.readdata["ShowTime"])
 
 		infile.close()
-		print ">> Configuration Loaded Successfully."
+		print "Configuration Loaded Successfully."
 
-	def get_minK(self):
-		return self.spin_min_cluster.get_value_as_int()
+	# Quit the program
+	def on_button_close_clicked(self, widget):
+		Gtk.main_quit()
 
-	def get_maxK(self):
-		return self.spin_max_cluster.get_value_as_int()
-
-	def get_time(self):
-		now = datetime.now()
-		return ((now - self.begin).total_seconds())
-
+# Main execution
 win = MainWindow()
 win.connect("delete-event", Gtk.main_quit)
 win.show_all()
