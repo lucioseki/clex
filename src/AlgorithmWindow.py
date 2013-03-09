@@ -13,7 +13,12 @@ class AlgorithmWindow(Gtk.Window):
 		self.box = Gtk.VBox()
 		self.bbox = Gtk.HButtonBox(spacing=6)
 		self.bbox.set_layout(Gtk.ButtonBoxStyle.START)
+		self.parambox = Gtk.VBox(spacing=6)
+		self.hbox_minK = Gtk.HBox(spacing=6)
+		self.hbox_maxK = Gtk.HBox(spacing=6)
+		self.hbox_exec_times = Gtk.HBox(spacing=6)
 
+		# Algorithm List
 		# List model
 		self.store = Gtk.ListStore(str)
 		self.store.append(["K-means"])
@@ -27,7 +32,6 @@ class AlgorithmWindow(Gtk.Window):
 		self.renderer = Gtk.CellRendererText()
 		self.column = Gtk.TreeViewColumn("Algorithm", self.renderer, text=0)
 		self.treeview.append_column(self.column)
-		self.box.pack_start(self.treeview, True, True, 0)
 
 		# List control
 		self.selection = self.treeview.get_selection()
@@ -43,6 +47,37 @@ class AlgorithmWindow(Gtk.Window):
 		# Packing buttons
 		self.bbox.pack_start(self.button_ok, True, True, 0)
 		self.bbox.pack_start(self.button_cancel, True, True, 0)
+
+		# Algorithm parameters
+		self.label_min_cluster = Gtk.Label("Min. Cluster number: ")
+		self.spin_min_cluster = Gtk.SpinButton()
+		self.spin_min_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
+		self.spin_min_cluster.set_numeric(True)
+
+		self.label_max_cluster = Gtk.Label("Max. Cluster number: ")
+		self.spin_max_cluster = Gtk.SpinButton()
+		self.spin_max_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
+		self.spin_max_cluster.set_numeric(True)
+
+		self.label_times = Gtk.Label("Times to execute\n non-deterministic\n algorithms: ")
+		self.spin_times = Gtk.SpinButton()
+		self.spin_times.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
+		self.spin_times.set_numeric(True)
+		self.hbox_exec_times.pack_start(self.label_times, True, True, 0)
+		self.hbox_exec_times.pack_start(self.spin_times, True, True, 0)
+
+		self.hbox_minK.pack_start(self.label_min_cluster, True, True, 0)
+		self.hbox_minK.pack_start(self.spin_min_cluster, True, True, 0)
+		self.hbox_maxK.pack_start(self.label_max_cluster, True, True, 0)
+		self.hbox_maxK.pack_start(self.spin_max_cluster, True, True, 0)
+
+		self.parambox.pack_start(self.hbox_minK, True, True, 0)
+		self.parambox.pack_start(self.hbox_maxK, True, True, 0)
+		self.parambox.pack_start(self.hbox_exec_times, True, True, 0)
+
+		# Packing into window
+		self.box.pack_start(self.treeview, True, True, 0)
+		self.box.pack_start(self.parambox, True, True, 0)
 		self.box.pack_start(self.bbox, True, True, 0)
 		self.add(self.box)
 

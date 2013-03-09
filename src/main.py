@@ -40,11 +40,8 @@ class MainWindow(Gtk.Window):
 
 		# General Configuration Frame
 		self.frame_general = Gtk.Frame(label="General Settings")
-		self.hbox1 = Gtk.HBox(spacing=6)
-		self.hbox2 = Gtk.HBox(spacing=6)
-		self.hbox3 = Gtk.HBox(spacing=6)
-		self.hbox4 = Gtk.HBox(spacing=6)
-		self.hbox5 = Gtk.HBox(spacing=6)
+		self.hbox_expname = Gtk.HBox(spacing=6)
+		self.hbox_expdir = Gtk.HBox(spacing=6)
 
 		# Button Boxes
 		self.bbox1 = Gtk.VButtonBox(spacing=6)
@@ -57,11 +54,8 @@ class MainWindow(Gtk.Window):
 		# Packing containers
 		self.hbox.pack_start(self.bbox1, True, True, 0)
 		self.hbox.pack_start(self.bbox2, True, True, 0)
-		self.vbox_general.pack_start(self.hbox1, True, True, 0)
-		self.vbox_general.pack_start(self.hbox2, True, True, 0)
-		self.vbox_general.pack_start(self.hbox3, True, True, 0)
-		self.vbox_general.pack_start(self.hbox4, True, True, 0)
-		self.vbox_general.pack_start(self.hbox5, True, True, 0)
+		self.vbox_general.pack_start(self.hbox_expname, True, True, 0)
+		self.vbox_general.pack_start(self.hbox_expdir, True, True, 0)
 		self.vbox_windows.pack_start(self.hbox, True, True, 0)
 		self.vbox_windows.pack_start(self.bbox3, True, True, 0)
 		self.frame_general.add(self.vbox_general)
@@ -75,32 +69,10 @@ class MainWindow(Gtk.Window):
 		self.label_dir = Gtk.Label("Directory: ")
 		self.entry_dir = Gtk.Entry()
 
-		self.label_min_cluster = Gtk.Label("Min. Cluster number: ")
-		self.spin_min_cluster = Gtk.SpinButton()
-		self.spin_min_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
-		self.spin_min_cluster.set_numeric(True)
-
-		self.label_max_cluster = Gtk.Label("Max. Cluster number: ")
-		self.spin_max_cluster = Gtk.SpinButton()
-		self.spin_max_cluster.set_adjustment(Gtk.Adjustment(2, 2, 100, 1, 10, 0))
-		self.spin_max_cluster.set_numeric(True)
-		self.label_times = Gtk.Label("Times to execute\n non-deterministic\n algorithms: ")
-		self.spin_times = Gtk.SpinButton()
-		self.spin_times.set_adjustment(Gtk.Adjustment(1, 1, 100, 1, 10, 0))
-		self.spin_times.set_numeric(True)
-		self.label_time = Gtk.Label("Show execution time: ")
-		self.check_time = Gtk.CheckButton()
-
-		self.hbox1.pack_start(self.label_name, True, True, 0)
-		self.hbox1.pack_start(self.entry_name, True, True, 0)
-		self.hbox2.pack_start(self.label_dir, True, True, 0)
-		self.hbox2.pack_start(self.entry_dir, True, True, 0)
-		self.hbox3.pack_start(self.label_min_cluster, True, True, 0)
-		self.hbox3.pack_start(self.spin_min_cluster, True, True, 0)
-		self.hbox4.pack_start(self.label_max_cluster, True, True, 0)
-		self.hbox4.pack_start(self.spin_max_cluster, True, True, 0)
-		self.hbox5.pack_start(self.label_times, True, True, 0)
-		self.hbox5.pack_start(self.spin_times, True, True, 0)
+		self.hbox_expname.pack_start(self.label_name, True, True, 0)
+		self.hbox_expname.pack_start(self.entry_name, True, True, 0)
+		self.hbox_expdir.pack_start(self.label_dir, True, True, 0)
+		self.hbox_expdir.pack_start(self.entry_dir, True, True, 0)
 
 		# Buttons to open other windows
 		self.button_dataset = Gtk.Button(label="Load DataSets")
