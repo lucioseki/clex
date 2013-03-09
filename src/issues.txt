@@ -2,6 +2,7 @@ Functions yet to be implemented
 
 Configuration: Create json file holding the configuration of the Experiment
 	Create the json struct from the parameters set by user
+	Each window must have setter and getter for json structs holding parameteres
 	Save it in a file
 	Load it from a file and set the parameters of the Experiment
 
@@ -13,6 +14,8 @@ ConfigWindow: Show a log of the setted parameters
 
 SNN: Add SNN to the AlgorithmWindow
 	Also add a configuration window for SNN
+	parameters for the algorithms must be set in AlgorithmWindow, not in MainWindow
+	AlgorithmWindow must have a method wich returns a list of call strings
 
 FileName: Set the output filenames as follows:
 experimentName/
