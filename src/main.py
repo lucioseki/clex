@@ -129,14 +129,14 @@ class MainWindow(Gtk.Window):
 
 	# Open window for selecting Real Partitions
 	def on_button_real_partition_clicked(self, widget, data):
-		self.win_dataset_list = self.win_dataset.get_selection_list()
-		self.win_real_partition.set_dataset_list(self.win_dataset_list)
+		self.dataset_list = self.win_dataset.get_selection_list()
+		self.win_real_partition.set_dataset_list(self.dataset_list)
 		self.win_real_partition.show_all()
 
 	# Open window for selecting Generated Partitions
 	def on_button_generated_partition_clicked(self, widget, data):
-		self.win_dataset_list = self.win_dataset.get_selection_list()
-		self.win_generated_partition.set_dataset_list(self.win_dataset_list)
+		self.dataset_list = self.win_dataset.get_selection_list()
+		self.win_generated_partition.set_dataset_list(self.dataset_list)
 		self.win_generated_partition.show_all()
 
 	# Open window for selecting External Validation Indexes to be used
@@ -174,15 +174,15 @@ class MainWindow(Gtk.Window):
 		
 		# instanciate Similarity Measures
 		print "[%.2fs] Setting Similarity measure..." % self.get_time()
-		self.win_similarity_list = self.win_similarity.get_selection_list()
+		self.similarity_list = self.win_similarity.get_selection_list()
 
-		if(self.win_similarity_list == []):
+		if(self.similarity_list == []):
 			print "[%.2fs] Error: No Similarities selected." % self.get_time()
 			return
 
-		self.similarity_list = StrVector(len(self.win_similarity_list))
+		self.similarity_list = StrVector(len(self.similarity_list))
 		for i in range(0, len(self.similarity_list)):
-			self.similarity_list[i] = self.win_similarity_list[i]
+			self.similarity_list[i] = self.similarity_list[i]
 		self.clex.setSimilarity(self.similarity_list)
 		print "[%.2fs] Similarity measures setted." % self.get_time()
 
@@ -205,54 +205,62 @@ class MainWindow(Gtk.Window):
 
 		# instanciate External Validation Indexes
 		print "\n[%.2fs] Setting External Validation Indexes..." % self.get_time()
-		self.win_external_validation_list = self.win_external_validation.get_selection_list()
-		if(self.win_external_validation_list == []):
+		self.external_validation_list = self.win_external_validation.get_selection_list()
+		if(self.external_validation_list == []):
 			print "[%.2fs] No External Validation Indexes selected." % self.get_time()
 		else:
-			self.external_validation_list = StrVector(len(self.win_external_validation_list))
+			self.external_validation_list = StrVector(len(self.external_validation_list))
 			for i in range(0, len(self.external_validation_list)):
-				self.external_validation_list[i] = self.win_external_validation_list[i]
+				self.external_validation_list[i] = self.external_validation_list[i]
 			self.clex.setExternalIndex(self.external_validation_list)
 			print "[%.2fs] External Validation Indexes setted." % self.get_time()
 
 		# instanciate Internal Validation Indexes
 		print "\n[%.2fs] Setting Internal Validation Indexes..." % self.get_time()
-		self.win_internal_validation_list = self.win_internal_validation.get_selection_list()
+		self.internal_validation_list = self.win_internal_validation.get_selection_list()
 
-		if(self.win_internal_validation_list == []):
+		if(self.internal_validation_list == []):
 			print "[%.2fs] No Internal Validation Indexes selected." % self.get_time()
 		else:
-			self.internal_validation_list = StrVector(len(self.win_internal_validation_list))
+			self.internal_validation_list = StrVector(len(self.internal_validation_list))
 			for i in range(0, len(self.internal_validation_list)):
-				self.internal_validation_list[i] = self.win_internal_validation_list[i]
+				self.internal_validation_list[i] = self.internal_validation_list[i]
 			self.clex.setInternalIndex(self.internal_validation_list)
 		print "[%.2fs] Internal Validation Indexes setted." % self.get_time()
 
 		# Clustering program
 		print "\n[%.2fs] Running Clustering Algorithms..." % self.get_time()
-		self.cluster_program = self.win_algorithm.get_call_string()
+		self.cluster_program = self.win_algorithm.get_clustering_program_path()
 
 		# Prepare the calling strings
 		self.call_list = []
-		self.win_algorithm_list = self.win_algorithm.get_selection_list()
+		self.alg_param_list = self.win_algorithm.get_algorithm_param_list()
 
-		if(self.win_algorithm_list == []):
-			print "[%.2fs] Error: No Clustering Algorithms selected." % self.get_time()
-			return
+		if(self.alg_param_list== []):
+			print "[%.2fs] No Clustering Algorithms selected." % self.get_time()
+		else:
+			self.minK = self.win_algorithm.get_minK()
+			self.maxK = self.win_algorithm.get_maxK()
+			self.times_to_run = self.win_algorithm.get_execution_times()
+			self.jobname = "teste"
+			for dataset in self.dataset_list:
+				for alg_param in self.alg_param_list:
 
-		for dataset in self.win_dataset_list:
-			for algorithm in self.win_algorithm_list:
-				if (algorithm == "K-means"):
-					self.minK = self.spin_min_cluster.get_value_as_int()
-					self.maxK = self.spin_max_cluster.get_value_as_int()
-					for k in range(self.minK, self.maxK + 1):
-						self.call_list.append([self.cluster_program, "-f", urlparse(self.win_dataset_list[i][0]).path, "-k", str(k)])
+					# K-means
+					if (alg_param == "k"):
+						for k in range(self.minK, self.maxK + 1):
+							self.call_list.append([self.cluster_program, "-f", dataset[0] + dataset[1], "-k", str(k), "-r", str(self.times_to_run), "-u", self.jobname])
 
-		# Run the calling strings
-		for call_string in self.call_list:
-			print "[%.2fs] " % self.get_time() + ' '.join(call_string)
-			call(call_string)
-		print "[%.2fs] Clustering Algorithms completed running." % self.get_time()
+					# Hierarchical algorithm
+					else:
+						self.call_list.append([self.cluster_program, "-f", dataset[0] + dataset[1], "-m", alg_param, "-u", self.jobname])
+						
+
+			# Run the calling strings
+			for call_string in self.call_list:
+				print "[%.2fs] " % self.get_time() + ' '.join(call_string)
+				call(call_string)
+			print "[%.2fs] Clustering Algorithms completed running." % self.get_time()
 
 		print "\n[%.2fs] Finished running Experiment." % self.get_time()
 	

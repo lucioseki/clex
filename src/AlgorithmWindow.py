@@ -3,10 +3,10 @@ from gi.repository import Gtk
 class AlgorithmWindow(Gtk.Window):
 	def __init__(self):
 		Gtk.Window.__init__(self, title="Set Algorithms")
-		self.selection_list = []
+		self.algorithm_param_list = []
 
 		# clustering program path
-		self.call_string = "clustering/cluster"
+		self.clustering_program_path = "clustering/cluster"
 
 		# Containers
 		self.set_default_size(300, 200)
@@ -86,15 +86,37 @@ class AlgorithmWindow(Gtk.Window):
 
 	def on_button_ok_clicked(self, widget):
 		self.model, self.treeiter = self.selection.get_selected_rows()
+
 		for row in self.treeiter:
-			self.selection_list.append(self.model[row][0])
+			self.alg = self.model[row][0]
+			if(self.alg == "K-means"):
+				self.param = "k"
+			elif(self.alg == "Pairwise complete-linkage"):
+				self.param = "m"
+			elif(self.alg == "Pairwise single-linkage"):
+				self.param = "s"
+			elif(self.alg == "Pairwise centroid-linkage"):
+				self.param = "c"
+			elif(self.alg == "Pairwise average-linkage"):
+				self.param = "a"
+
+			self.algorithm_param_list.append(self.param)
 		self.hide()
 
 	def on_button_cancel_clicked(self, widget):
 		self.hide()
 
-	def get_selection_list(self):
-		return self.selection_list
+	def get_algorithm_param_list(self):
+		return self.algorithm_param_list
 
-	def get_call_string(self):
-		return self.call_string
+	def get_clustering_program_path(self):
+		return self.clustering_program_path
+	
+	def get_minK(self):
+		return self.spin_min_cluster.get_value_as_int()
+
+	def get_maxK(self):
+		return self.spin_max_cluster.get_value_as_int()
+
+	def get_execution_times(self):
+		return self.spin_times.get_value_as_int()

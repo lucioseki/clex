@@ -14,8 +14,6 @@ ConfigWindow: Show a log of the setted parameters
 
 SNN: Add SNN to the AlgorithmWindow
 	Also add a configuration window for SNN
-	parameters for the algorithms must be set in AlgorithmWindow, not in MainWindow
-	AlgorithmWindow must have a method wich returns a list of call strings
 
 FileName: Set the output filenames as follows:
 experimentName/
