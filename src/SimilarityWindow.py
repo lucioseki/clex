@@ -4,6 +4,7 @@ class SimilarityWindow(Gtk.Window):
 	def __init__(self):
 		Gtk.Window.__init__(self, title="Select Similarity Measures")
 		self.selection_list = []
+		self.similarity_param_list = []
 
 		# Containers
 		self.set_default_size(300, 200)
@@ -46,6 +47,13 @@ class SimilarityWindow(Gtk.Window):
 	def on_button_ok_clicked(self, widget):
 		self.model, self.treeiter = self.selection.get_selected_rows()
 		for row in self.treeiter:
+			self.sim = self.model[row][0]
+			if(self.sim == "Euclidean Distance"):
+				self.param = "7"
+			elif(self.sim == "Pearson Correlation"):
+				self.param = "2"
+
+			self.similarity_param_list.append(self.param)
 			self.selection_list.append(self.model[row][0])
 		self.hide()
 
@@ -54,3 +62,6 @@ class SimilarityWindow(Gtk.Window):
 
 	def get_selection_list(self):
 		return self.selection_list
+
+	def get_similarity_param_list(self):
+		return self.similarity_param_list

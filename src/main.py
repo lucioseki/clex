@@ -14,6 +14,7 @@ from os import path
 from urlparse import urlparse 
 import json
 from datetime import datetime
+import os, errno
 
 class RealPartitionWindow(PartitionWindow):
 	def __init__(self):
@@ -165,22 +166,40 @@ class MainWindow(Gtk.Window):
 
 		print "......................................"
 		print "\n[%.2fs] Starting Experiment..." % .0
+		self.begin_time = datetime.now()
+
+		# create directory tree for the experiment
+		self.expname = self.entry_name.get_text()
+		self.expdir = self.entry_dir.get_text()
+		if(self.expname == ""):
+			print "\n[%.2fs] Error: Experiment name not set" % self.get_time()
+			return
+		if(self.expdir == ""):
+			print "\n[%.2fs] Error: Experiment directory not set" % self.get_time()
+			return
+
+		self.exppath = os.path.join(self.expdir, self.expname)
+		try:
+			os.makedirs(self.exppath)
+		except OSError as exc:
+			if exc.errno == errno.EEXIST and os.path.isdir(self.exppath):
+				pass
+			else: raise
 
 		# instanciate Clex
-		self.begin_time = datetime.now()
 		print "\n[%.2fs] Creating Clex instance..." % self.get_time()
 		self.clex = Clex()
 		print "[%.2fs] Clex instance created." % self.get_time()
 		
 		# instanciate Similarity Measures
 		print "[%.2fs] Setting Similarity measure..." % self.get_time()
-		self.similarity_list = self.win_similarity.get_selection_list()
+		self.win_similarity_list = self.win_similarity.get_selection_list()
 
-		if(self.similarity_list == []):
+		if(self.win_similarity_list == []):
 			print "[%.2fs] Error: No Similarities selected." % self.get_time()
 			return
 
-		self.similarity_list = StrVector(len(self.similarity_list))
+		self.similarity_list = StrVector(len(self.win_similarity_list))
 		for i in range(0, len(self.similarity_list)):
 			self.similarity_list[i] = self.similarity_list[i]
 		self.clex.setSimilarity(self.similarity_list)
@@ -205,11 +224,11 @@ class MainWindow(Gtk.Window):
 
 		# instanciate External Validation Indexes
 		print "\n[%.2fs] Setting External Validation Indexes..." % self.get_time()
-		self.external_validation_list = self.win_external_validation.get_selection_list()
-		if(self.external_validation_list == []):
+		self.win_external_validation_list = self.win_external_validation.get_selection_list()
+		if(self.win_external_validation_list == []):
 			print "[%.2fs] No External Validation Indexes selected." % self.get_time()
 		else:
-			self.external_validation_list = StrVector(len(self.external_validation_list))
+			self.external_validation_list = StrVector(len(self.win_external_validation_list))
 			for i in range(0, len(self.external_validation_list)):
 				self.external_validation_list[i] = self.external_validation_list[i]
 			self.clex.setExternalIndex(self.external_validation_list)
@@ -217,12 +236,12 @@ class MainWindow(Gtk.Window):
 
 		# instanciate Internal Validation Indexes
 		print "\n[%.2fs] Setting Internal Validation Indexes..." % self.get_time()
-		self.internal_validation_list = self.win_internal_validation.get_selection_list()
+		self.win_internal_validation_list = self.win_internal_validation.get_selection_list()
 
-		if(self.internal_validation_list == []):
+		if(self.win_internal_validation_list == []):
 			print "[%.2fs] No Internal Validation Indexes selected." % self.get_time()
 		else:
-			self.internal_validation_list = StrVector(len(self.internal_validation_list))
+			self.internal_validation_list = StrVector(len(self.win_internal_validation_list))
 			for i in range(0, len(self.internal_validation_list)):
 				self.internal_validation_list[i] = self.internal_validation_list[i]
 			self.clex.setInternalIndex(self.internal_validation_list)
@@ -242,18 +261,32 @@ class MainWindow(Gtk.Window):
 			self.minK = self.win_algorithm.get_minK()
 			self.maxK = self.win_algorithm.get_maxK()
 			self.times_to_run = self.win_algorithm.get_execution_times()
-			self.jobname = "teste"
+			self.sim_list = self.win_similarity.get_similarity_param_list()
 			for dataset in self.dataset_list:
 				for alg_param in self.alg_param_list:
 
+					# create directory for each dataset
+					self.jobdir = os.path.join(self.exppath, dataset[1], "generatedPartition")
+					try:
+						os.makedirs(self.jobdir)
+					except OSError as exc:
+						if exc.errno == errno.EEXIST and os.path.isdir(self.jobdir):
+							pass
+						else: raise
+
 					# K-means
 					if (alg_param == "k"):
-						for k in range(self.minK, self.maxK + 1):
-							self.call_list.append([self.cluster_program, "-f", dataset[0] + dataset[1], "-k", str(k), "-r", str(self.times_to_run), "-u", self.jobname])
+						for similarity in self.sim_list:
+							for k in range(self.minK, self.maxK + 1):
+								for r in range(1, self.times_to_run + 1):
+									self.jobname = os.path.join(self.jobdir, "KM-" + similarity + "-k" + str(k) + "-r" + str(r))
+									self.call_list.append([self.cluster_program, "-f", dataset[0] + dataset[1], "-g", similarity, "-k", str(k), "-r", str(r), "-u", self.jobname])
 
 					# Hierarchical algorithm
 					else:
-						self.call_list.append([self.cluster_program, "-f", dataset[0] + dataset[1], "-m", alg_param, "-u", self.jobname])
+						for similarity in self.sim_list:
+							self.jobname = os.path.join(self.jobdir, alg_param + "-" + similarity)
+							self.call_list.append([self.cluster_program, "-f", dataset[0] + dataset[1], "-m", alg_param, "-u", self.jobname])
 						
 
 			# Run the calling strings
